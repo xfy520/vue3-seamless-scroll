@@ -1,6 +1,6 @@
 {
   "name": "vue3-seamless-scroll",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "author": "xufangyi",
   "private": false,
   "description": "Vue3.0 无缝滚动组件",
@@ -36,7 +36,9 @@
     "build": "rollup -c",
     "dev": "vite"
   },
-  "dependencies": {},
+  "dependencies": {
+    "throttle-debounce": "^3.0.1"
+  },
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "@vitejs/plugin-vue": "^1.10.1",

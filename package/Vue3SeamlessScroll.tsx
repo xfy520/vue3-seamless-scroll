@@ -1,4 +1,5 @@
-import { computed, CSSProperties, defineComponent, nextTick, onBeforeMount, onMounted, PropType, ref, watch } from 'vue'
+import { computed, CSSProperties, defineComponent, nextTick, onBeforeMount, onMounted, PropType, ref, watch } from 'vue';
+import { throttle } from 'throttle-debounce';
 
 const props = {
   // 是否开启自动滚动
@@ -75,6 +76,11 @@ const props = {
   copyNum: {
     type: Number,
     default: 1
+  },
+  // 开启鼠标悬停时支持滚轮滚动
+  wheel: {
+    type: Boolean,
+    default: false
   }
 }
 
@@ -196,6 +202,68 @@ const Vue3SeamlessScroll = defineComponent({
       reqFrame.value = null;
     }
 
+    function animation(_direction: 'up' | 'down' | 'left' | 'right', _step: number, isWheel?: boolean) {
+      reqFrame.value = requestAnimationFrame(function () {
+        const h = realBoxHeight.value / 2;
+        const w = realBoxWidth.value / 2;
+        if (_direction === 'up') {
+          if (Math.abs(yPos.value) >= h) {
+            yPos.value = 0;
+            _count.value += 1;
+            emit('count', _count.value);
+          }
+          yPos.value -= _step;
+        } else if (_direction === 'down') {
+          if (yPos.value >= 0) {
+            yPos.value = h * -1;
+            _count.value += 1;
+            emit('count', _count.value);
+          }
+          yPos.value += _step;
+        } else if (_direction === 'left') {
+          if (Math.abs(xPos.value) >= w) {
+            xPos.value = 0;
+            _count.value += 1;
+            emit('count', _count.value);
+          }
+          xPos.value -= _step;
+        } else if (_direction === 'right') {
+          if (xPos.value >= 0) {
+            xPos.value = w * -1;
+            _count.value += 1;
+            emit('count', _count.value);
+          }
+          xPos.value += _step;
+        }
+        if (isWheel) {
+          return;
+        }
+        let { singleWaitTime } = props;
+        if (singleWaitTimeout.value) {
+          clearTimeout(singleWaitTimeout.value);
+        }
+        if (!!realSingleStopHeight.value) {
+          if (Math.abs(yPos.value) % realSingleStopHeight.value < _step) {
+            singleWaitTimeout.value = setTimeout(() => {
+              move();
+            }, singleWaitTime)
+          } else {
+            move();
+          }
+        } else if (!!realSingleStopWidth.value) {
+          if (Math.abs(xPos.value) % realSingleStopWidth.value < _step) {
+            singleWaitTimeout.value = setTimeout(() => {
+              move();
+            }, singleWaitTime)
+          } else {
+            move();
+          }
+        } else {
+          move();
+        }
+      });
+    }
+
     function move() {
       cancle();
       if (isHover.value || !isScroll.value || _count.value === props.count) {
@@ -203,62 +271,7 @@ const Vue3SeamlessScroll = defineComponent({
         _count.value = 0;
         return;
       }
-      reqFrame.value = requestAnimationFrame(function () {
-        const h = realBoxHeight.value / 2
-        const w = realBoxWidth.value / 2
-        let { direction, singleWaitTime } = props
-        if (direction === 'up') {
-          if (Math.abs(yPos.value) >= h) {
-            yPos.value = 0
-            _count.value += 1
-            emit('count', _count.value)
-          }
-          yPos.value -= step.value
-        } else if (direction === 'down') {
-          if (yPos.value >= 0) {
-            yPos.value = h * -1
-            _count.value += 1
-            emit('count', _count.value)
-          }
-          yPos.value += step.value
-        } else if (direction === 'left') {
-          if (Math.abs(xPos.value) >= w) {
-            xPos.value = 0
-            _count.value += 1
-            emit('count', _count.value)
-          }
-          xPos.value -= step.value
-        } else if (direction === 'right') {
-          if (xPos.value >= 0) {
-            xPos.value = w * -1
-            _count.value += 1
-            emit('count', _count.value)
-          }
-          xPos.value += step.value
-        }
-        if (singleWaitTimeout.value) {
-          clearTimeout(singleWaitTimeout.value)
-        }
-        if (!!realSingleStopHeight.value) {
-          if (Math.abs(yPos.value) % realSingleStopHeight.value < step.value) {
-            singleWaitTimeout.value = setTimeout(() => {
-              move()
-            }, singleWaitTime)
-          } else {
-            move()
-          }
-        } else if (!!realSingleStopWidth.value) {
-          if (Math.abs(xPos.value) % realSingleStopWidth.value < step.value) {
-            singleWaitTimeout.value = setTimeout(() => {
-              move()
-            }, singleWaitTime)
-          } else {
-            move()
-          }
-        } else {
-          move()
-        }
-      });
+      animation(props.direction as ('up' | 'down' | 'left' | 'right'), step.value, false);
     }
 
     function initMove() {
@@ -296,6 +309,21 @@ const Vue3SeamlessScroll = defineComponent({
     const hoverStop = computed(
       () => props.hover && props.modelValue && isScroll.value
     )
+
+    const throttleFunc = throttle(30, (e: WheelEvent) => {
+      cancle();
+      const singleHeight = !!realSingleStopHeight.value ? realSingleStopHeight.value : 15;
+      if (e.deltaY < 0) {
+        animation('down', singleHeight, true);
+      }
+      if (e.deltaY > 0) {
+        animation('up', singleHeight, true);
+      }
+    });
+
+    const onWheel = (e: WheelEvent) => {
+      throttleFunc(e);
+    }
 
     function reset() {
       cancle();
@@ -338,35 +366,60 @@ const Vue3SeamlessScroll = defineComponent({
     });
 
     onMounted(() => {
-      initMove()
+      initMove();
     })
 
-    const { default: $default, html } = slots
-    const copyNum = new Array(props.copyNum).fill(null)
+    const { default: $default, html } = slots;
+    const copyNum = new Array(props.copyNum).fill(null);
+    const getHtml = () => {
+      return <>
+        <div ref={slotListRef} style={floatStyle.value}>
+          {$default()}
+        </div>
+        {
+          isScroll ? copyNum.map(() => {
+            if (html && typeof html === 'function') {
+              return (<div style={floatStyle.value}>{html()}</div>)
+            } else {
+              return (<div style={floatStyle.value}>{$default()}</div>)
+            }
+          }) : null
+        }
+      </>
+    }
+
     return () => (
       <div ref={scrollRef} class={attrs.class}>
-        <div ref={realBoxRef} style={realBoxStyle.value} onMouseenter={() => {
-          if (hoverStop.value) {
-            stopMove();
-          }
-        }} onMouseleave={() => {
-          if (hoverStop.value) {
-            startMove();
-          }
-        }}>
-          <div ref={slotListRef} style={floatStyle.value}>
-            {$default()}
-          </div>
-          {
-            isScroll ? copyNum.map(() => {
-              if (html && typeof html === 'function') {
-                return (<div style={floatStyle.value}>{html()}</div>)
-              } else {
-                return (<div style={floatStyle.value}>{$default()}</div>)
+        {
+          props.wheel && props.hover ? (
+            <div ref={realBoxRef} style={realBoxStyle.value} onMouseenter={() => {
+              if (hoverStop.value) {
+                stopMove();
               }
-            }) : null
-          }
-        </div >
+            }} onMouseleave={() => {
+              if (hoverStop.value) {
+                startMove();
+              }
+            }} onWheel={(e) => {
+              if (hoverStop.value) {
+                onWheel(e);
+              }
+            }}>
+              {getHtml()}
+            </div >
+          ) : (<div ref={realBoxRef} style={realBoxStyle.value} onMouseenter={() => {
+            if (hoverStop.value) {
+              stopMove();
+            }
+          }} onMouseleave={() => {
+            if (hoverStop.value) {
+              startMove();
+            }
+          }} >
+            {getHtml()}
+          </div >)
+        }
+
       </div >
     )
   }

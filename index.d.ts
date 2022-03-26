@@ -19,6 +19,7 @@ type OptionsType = {
   };
   count?: number;
   copyNum?: number;
+  wheel?: boolean;
 }
 
 declare module 'vue3-seamless-scroll' {

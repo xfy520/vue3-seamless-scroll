@@ -1,5 +1,5 @@
 <template>
-  <div class="scroll">
+  <!-- <div class="scroll">
     <div>默认配置</div>
     <vue3-seamless-scroll :list="list" :ease="ease">
       <div class="item" v-for="(item, index) in list" :key="index">
@@ -27,7 +27,7 @@
     </vue3-seamless-scroll>
   </div>
 
-  <div class="scroll">
+  <div class="scroll" style="width: 530px;">
     <div>向左滚动</div>
     <vue3-seamless-scroll :list="list" direction="left">
       <div class="item" v-for="(item, index) in list" :key="index">
@@ -45,11 +45,11 @@
         <span>{{ item.date }}</span>
       </div>
     </vue3-seamless-scroll>
-  </div>
+  </div> -->
 
   <div class="scroll">
     <div>鼠标悬停</div>
-    <vue3-seamless-scroll :list="list" hover>
+    <vue3-seamless-scroll :list="list" hover wheel>
       <div class="item" v-for="(item, index) in list" :key="index">
         <span>{{ item.title }}</span>
         <span>{{ item.date }}</span>
@@ -57,7 +57,7 @@
     </vue3-seamless-scroll>
   </div>
 
-  <div class="scroll">
+  <!-- <div class="scroll">
     <div>单步停顿</div>
     <vue3-seamless-scroll :list="list" :singleHeight="27">
       <div class="item" v-for="(item, index) in list" :key="index">
@@ -121,7 +121,7 @@
         </div>
       </template>
     </vue3-seamless-scroll>
-  </div>
+  </div> -->
 </template>
 <script lang="ts">
 
@@ -258,7 +258,8 @@ export default defineComponent({
       y1: 0,
       x2: 1,
       y2: 1,
-    })
+    });
+    const notScroll = ref(false)
 
     onMounted(() => {
       setInterval(() => {
@@ -299,7 +300,8 @@ export default defineComponent({
       count,
       onCount,
       onClick,
-      ease
+      ease,
+      notScroll
     }
   }
 })
@@ -308,7 +310,6 @@ export default defineComponent({
 .scroll {
   display: inline-block;
   height: 300px;
-  width: 390px;
   margin: 0 25px;
   overflow: hidden;
   position: relative;
