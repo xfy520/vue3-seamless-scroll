@@ -193,6 +193,7 @@ const Vue3SeamlessScroll = defineComponent({
             float: "left",
             overflow: "hidden",
             display: props.singleLine ? "flex" : "block",
+            flexShrink: props.singleLine ? 0 : 1,
           }
         : { overflow: "hidden" };
     });
