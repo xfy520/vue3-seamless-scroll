@@ -47,13 +47,19 @@
     </vue3-seamless-scroll>
   </div> -->
 
-  <div class="scroll">
+  <!-- <div class="scroll">
     <div>鼠标悬停</div>
     <vue3-seamless-scroll :list="list" hover wheel>
       <div class="item" v-for="(item, index) in list" :key="index">
         <span>{{ item.title }}</span>
         <span>{{ item.date }}</span>
       </div>
+    </vue3-seamless-scroll>
+  </div> -->
+
+  <div class="scroll">
+    <vue3-seamless-scroll :list="list" direction="left" :singleLine="true">
+      <span v-for="(item, index) in list" :key="index">{{ item.title }}</span>
     </vue3-seamless-scroll>
   </div>
 
@@ -124,128 +130,127 @@
   </div> -->
 </template>
 <script lang="ts">
-
 const listData = [
   {
-    title: "Vue3.0 无缝滚动组件展示数据第1条",
+    title: "Vue3.0 无缝滚动组件展示数据第 1 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第2条",
+    title: "Vue3.0 无缝滚动组件展示数据第 2 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第3条",
+    title: "Vue3.0 无缝滚动组件展示数据第 3 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第4条",
+    title: "Vue3.0 无缝滚动组件展示数据第 4 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第5条",
+    title: "Vue3.0 无缝滚动组件展示数据第 5 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第6条",
+    title: "Vue3.0 无缝滚动组件展示数据第 6 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第7条",
+    title: "Vue3.0 无缝滚动组件展示数据第 7 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第8条",
+    title: "Vue3.0 无缝滚动组件展示数据第 8 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第9条",
+    title: "Vue3.0 无缝滚动组件展示数据第 9 条",
     date: Date.now(),
   },
 ];
 const listData1 = [
   {
-    title: "Vue3.0 无缝滚动组件展示数据第1条",
+    title: "Vue3.0 无缝滚动组件展示数据第 1 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第2条",
+    title: "Vue3.0 无缝滚动组件展示数据第 2 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第3条",
+    title: "Vue3.0 无缝滚动组件展示数据第 3 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第4条",
+    title: "Vue3.0 无缝滚动组件展示数据第 4 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第5条",
+    title: "Vue3.0 无缝滚动组件展示数据第 5 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第6条",
+    title: "Vue3.0 无缝滚动组件展示数据第 6 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第7条",
+    title: "Vue3.0 无缝滚动组件展示数据第 7 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第8条",
+    title: "Vue3.0 无缝滚动组件展示数据第 8 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第9条",
+    title: "Vue3.0 无缝滚动组件展示数据第 9 条",
     date: Date.now(),
   },
 ];
 const listData2 = [
   {
-    title: "Vue3.0 无缝滚动组件展示数据第1条",
+    title: "Vue3.0 无缝滚动组件展示数据第 1 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第2条",
+    title: "Vue3.0 无缝滚动组件展示数据第 2 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第3条",
+    title: "Vue3.0 无缝滚动组件展示数据第 3 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第4条",
+    title: "Vue3.0 无缝滚动组件展示数据第 4 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第5条",
+    title: "Vue3.0 无缝滚动组件展示数据第 5 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第6条",
+    title: "Vue3.0 无缝滚动组件展示数据第 6 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第7条",
+    title: "Vue3.0 无缝滚动组件展示数据第 7 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第8条",
+    title: "Vue3.0 无缝滚动组件展示数据第 8 条",
     date: Date.now(),
   },
   {
-    title: "Vue3.0 无缝滚动组件展示数据第9条",
+    title: "Vue3.0 无缝滚动组件展示数据第 9 条",
     date: Date.now(),
   },
-]
-import { defineComponent, ref, onMounted } from 'vue'
-import { Vue3SeamlessScroll } from '../package/index'
+];
+import { defineComponent, ref, onMounted } from "vue";
+import { Vue3SeamlessScroll } from "../package/index";
 
 export default defineComponent({
-  name: 'App',
+  name: "App",
   components: {
-    Vue3SeamlessScroll
+    Vue3SeamlessScroll,
   },
   setup() {
     const list = ref(listData);
@@ -259,13 +264,13 @@ export default defineComponent({
       x2: 1,
       y2: 1,
     });
-    const notScroll = ref(false)
+    const notScroll = ref(false);
 
     onMounted(() => {
       setInterval(() => {
-        list1.value[1].title = "我是第2条更新数据";
-        list1.value[5].title = "我是第6条更新数据";
-        list1.value[7].title = "我是第8条更新数据";
+        list1.value[1].title = "我是第 2 条更新数据";
+        list1.value[5].title = "我是第 6 条更新数据";
+        list1.value[7].title = "我是第 8 条更新数据";
       }, 1000);
 
       setInterval(() => {
@@ -301,37 +306,30 @@ export default defineComponent({
       onCount,
       onClick,
       ease,
-      notScroll
-    }
-  }
-})
+      notScroll,
+    };
+  },
+});
 </script>
 <style>
 .scroll {
-  display: inline-block;
-  height: 300px;
-  margin: 0 25px;
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  width: 100%;
   overflow: hidden;
   position: relative;
 }
 
-.scroll > div:first-child {
-  font-weight: bold;
-  color: red;
-  text-align: center;
+span {
+  display: inline-block;
+  height: 20px;
+  margin-top: 12px;
+  white-space: nowrap;
 }
 
-.scroll > div:last-child {
-  margin-top: 15px;
-  height: 260px;
-  overflow: hidden;
-}
-
-.scroll .item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 3px 0;
-  cursor: pointer;
+* {
+  margin: 0;
+  padding: 0;
 }
 </style>
