@@ -192,6 +192,16 @@ Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
     required: false
   ```
 
+- `singleLine`
+
+  > 启用单行横向滚动
+
+  ```json
+    type: boolean,
+    default: false,
+    required: false
+  ```
+
 ## 注意项
 
 > 需要滚动的列表所在容器必须设置样式 `overflow: hidden`;

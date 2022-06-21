@@ -27,7 +27,7 @@ const Props = {
   },
   // 原始数据列表
   list: {
-    type: Array<unknown>,
+    type: Array,
     required: true,
     default: [],
   },
@@ -175,19 +175,18 @@ const Vue3SeamlessScroll = defineComponent({
         width: realBoxWidth.value ? `${realBoxWidth.value}px` : "auto",
         transform: `translate(${xPos.value}px,${yPos.value}px)`,
         // @ts-ignore
-        transition: `all ${
-          typeof props.ease === "string"
-            ? props.ease
-            : "cubic-bezier(" +
-              props.ease.x1 +
-              "," +
-              props.ease.y1 +
-              "," +
-              props.ease.x2 +
-              "," +
-              props.ease.y2 +
-              ")"
-        } ${props.delay}ms`,
+        transition: `all ${typeof props.ease === "string"
+          ? props.ease
+          : "cubic-bezier(" +
+          props.ease.x1 +
+          "," +
+          props.ease.y1 +
+          "," +
+          props.ease.x2 +
+          "," +
+          props.ease.y2 +
+          ")"
+          } ${props.delay}ms`,
         overflow: "hidden",
         display: props.singleLine ? "flex" : "block",
       };
@@ -200,22 +199,22 @@ const Vue3SeamlessScroll = defineComponent({
     const floatStyle = computed<CSSProperties>(() => {
       return isHorizontal.value
         ? {
-            float: "left",
-            overflow: "hidden",
-            display: props.singleLine ? "flex" : "block",
-            flexShrink: props.singleLine ? 0 : 1,
-          }
+          float: "left",
+          overflow: "hidden",
+          display: props.singleLine ? "flex" : "block",
+          flexShrink: props.singleLine ? 0 : 1,
+        }
         : { overflow: "hidden" };
     });
 
     const baseFontSize = computed(() => {
       return props.isRemUnit
         ? parseInt(
-            globalThis.window.getComputedStyle(
-              globalThis.document.documentElement,
-              null
-            ).fontSize
-          )
+          globalThis.window.getComputedStyle(
+            globalThis.document.documentElement,
+            null
+          ).fontSize
+        )
         : 1;
     });
 
@@ -364,7 +363,7 @@ const Vue3SeamlessScroll = defineComponent({
       () => props.hover && props.modelValue && isScroll.value
     );
 
-    const throttleFunc = throttle(30, (e: WheelEvent) => {
+    const throttleFunc = throttle(30, undefined, (e: WheelEvent) => {
       cancle();
       const singleHeight = !!realSingleStopHeight.value
         ? realSingleStopHeight.value
@@ -391,13 +390,13 @@ const Vue3SeamlessScroll = defineComponent({
       reset()
     }
 
-    useExpose({Reset})
+    useExpose({ Reset })
 
     watch(
       () => props.list,
       () => {
         if (props.isWatch) {
-          nextTick(()=>{
+          nextTick(() => {
             reset();
           })
         }
@@ -449,12 +448,12 @@ const Vue3SeamlessScroll = defineComponent({
           </div>
           {isScroll.value
             ? copyNum.map(() => {
-                if (html && typeof html === "function") {
-                  return <div style={floatStyle.value}>{html()}</div>;
-                } else {
-                  return <div style={floatStyle.value}>{$default && $default()}</div>;
-                }
-              })
+              if (html && typeof html === "function") {
+                return <div style={floatStyle.value}>{html()}</div>;
+              } else {
+                return <div style={floatStyle.value}>{$default && $default()}</div>;
+              }
+            })
             : null}
         </>
       );
