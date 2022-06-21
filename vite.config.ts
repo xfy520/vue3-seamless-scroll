@@ -14,6 +14,7 @@ export default (): UserConfigExport => defineConfig({
         drop_debugger: true,
       },
     },
+    minify: 'terser',
     brotliSize: false,
     chunkSizeWarningLimit: 2000,
   },

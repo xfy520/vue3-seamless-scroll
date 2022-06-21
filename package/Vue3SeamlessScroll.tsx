@@ -2,16 +2,24 @@ import {
   computed,
   CSSProperties,
   defineComponent,
-  nextTick,
   onBeforeMount,
   onMounted,
-  PropType,
   ref,
   watch,
+  nextTick,
+  getCurrentInstance,
 } from "vue";
 import { throttle } from "throttle-debounce";
+import propType from "./type";
 
-const props = {
+function useExpose(apis: Record<string, any>) {
+  const instance = getCurrentInstance();
+  if (instance) {
+    Object.assign(instance.proxy as Object, apis);
+  }
+}
+
+const Props = {
   // 是否开启自动滚动
   modelValue: {
     type: Boolean,
@@ -19,8 +27,9 @@ const props = {
   },
   // 原始数据列表
   list: {
-    type: Array,
+    type: Array<unknown>,
     required: true,
+    default: [],
   },
   // 步进速度，step 需是单步大小的约数
   step: {
@@ -30,7 +39,7 @@ const props = {
   // 开启滚动的数据量
   limitScrollNum: {
     type: Number,
-    default: 1,
+    default: 3,
   },
   // 是否开启鼠标悬停
   hover: {
@@ -132,10 +141,10 @@ globalThis.window.requestAnimationFrame = (function () {
   );
 })();
 
-function dataWarm(modelValue) {
-  if (typeof modelValue !== "boolean" && modelValue.length > 100) {
+function dataWarm(list) {
+  if (list && typeof list !== "boolean" && list.length > 100) {
     console.warn(
-      `数据达到了${modelValue.length}条有点多哦~,可能会造成部分老旧浏览器卡顿。`
+      `数据达到了${list.length}条有点多哦~,可能会造成部分老旧浏览器卡顿。`
     );
   }
 }
@@ -143,14 +152,15 @@ function dataWarm(modelValue) {
 const Vue3SeamlessScroll = defineComponent({
   name: "vue3-seamless-scroll",
   inheritAttrs: false,
-  props,
-  emits: ["stop", "count"],
-  setup(props, { slots, emit, attrs }) {
+  props: Props,
+  emits: ["stop", "count", "move"],
+  setup(_props, { slots, emit, attrs }) {
+    const props = _props as unknown as propType;
     const scrollRef = ref(null);
-    const slotListRef = ref(null);
-    const realBoxRef = ref(null);
-    const reqFrame = ref<number>(null);
-    const singleWaitTimeout = ref<NodeJS.Timeout>(null);
+    const slotListRef = ref<HTMLDivElement | null>(null);
+    const realBoxRef = ref<HTMLDivElement | null>(null);
+    const reqFrame = ref<number | null>(null);
+    const singleWaitTimeout = ref<NodeJS.Timeout | null>(null);
     const realBoxWidth = ref(0);
     const realBoxHeight = ref(0);
     const xPos = ref(0);
@@ -158,7 +168,7 @@ const Vue3SeamlessScroll = defineComponent({
     const isHover = ref(false);
     const _count = ref(0);
 
-    const isScroll = computed(() => props.list.length >= props.limitScrollNum);
+    const isScroll = computed(() => props.list ? (props.list.length >= props.limitScrollNum) : false);
 
     const realBoxStyle = computed(() => {
       return {
@@ -233,16 +243,16 @@ const Vue3SeamlessScroll = defineComponent({
       return _step;
     });
 
-    function cancle() {
-      cancelAnimationFrame(reqFrame.value);
+    const cancle = () => {
+      cancelAnimationFrame(reqFrame.value as number);
       reqFrame.value = null;
     }
 
-    function animation(
+    const animation = (
       _direction: "up" | "down" | "left" | "right",
       _step: number,
       isWheel?: boolean
-    ) {
+    ) => {
       reqFrame.value = requestAnimationFrame(function () {
         const h = realBoxHeight.value / 2;
         const w = realBoxWidth.value / 2;
@@ -304,7 +314,7 @@ const Vue3SeamlessScroll = defineComponent({
       });
     }
 
-    function move() {
+    const move = () => {
       cancle();
       if (isHover.value || !isScroll.value || _count.value === props.count) {
         emit("stop", _count.value);
@@ -318,16 +328,16 @@ const Vue3SeamlessScroll = defineComponent({
       );
     }
 
-    function initMove() {
+    const initMove = () => {
       dataWarm(props.list);
       if (isHorizontal.value) {
-        let slotListWidth = slotListRef.value.offsetWidth;
+        let slotListWidth = (slotListRef.value as HTMLDivElement).offsetWidth;
         slotListWidth = slotListWidth * 2 + 1;
         realBoxWidth.value = slotListWidth;
       }
 
       if (isScroll.value) {
-        realBoxHeight.value = realBoxRef.value.offsetHeight;
+        realBoxHeight.value = (realBoxRef.value as HTMLDivElement).offsetHeight;
         if (props.modelValue) {
           move();
         }
@@ -337,12 +347,12 @@ const Vue3SeamlessScroll = defineComponent({
       }
     }
 
-    function startMove() {
+    const startMove = () => {
       isHover.value = false;
       move();
     }
 
-    function stopMove() {
+    const stopMove = () => {
       isHover.value = true;
       if (singleWaitTimeout.value) {
         clearTimeout(singleWaitTimeout.value);
@@ -371,17 +381,25 @@ const Vue3SeamlessScroll = defineComponent({
       throttleFunc(e);
     };
 
-    function reset() {
+    const reset = () => {
       cancle();
       isHover.value = false;
       initMove();
     }
 
+    const Reset = () => {
+      reset()
+    }
+
+    useExpose({Reset})
+
     watch(
       () => props.list,
       () => {
         if (props.isWatch) {
-          reset();
+          nextTick(()=>{
+            reset();
+          })
         }
       },
       {
@@ -411,27 +429,30 @@ const Vue3SeamlessScroll = defineComponent({
 
     onBeforeMount(() => {
       cancle();
-      clearTimeout(singleWaitTimeout.value);
+      clearTimeout(singleWaitTimeout.value as unknown as number);
     });
 
     onMounted(() => {
-      initMove();
+      if (isScroll.value) {
+        initMove();
+      }
     });
 
     const { default: $default, html } = slots;
     const copyNum = new Array(props.copyNum).fill(null);
+
     const getHtml = () => {
       return (
         <>
           <div ref={slotListRef} style={floatStyle.value}>
-            {$default()}
+            {$default && $default()}
           </div>
-          {isScroll
+          {isScroll.value
             ? copyNum.map(() => {
                 if (html && typeof html === "function") {
                   return <div style={floatStyle.value}>{html()}</div>;
                 } else {
-                  return <div style={floatStyle.value}>{$default()}</div>;
+                  return <div style={floatStyle.value}>{$default && $default()}</div>;
                 }
               })
             : null}

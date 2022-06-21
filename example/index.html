@@ -7,9 +7,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>vue3-seamless-scroll 例子</title>
   <style>
+    .singleLine {
+      display: flex;
+      flex-direction: row;
+      height: 40px;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .singleLine span {
+      display: inline-block;
+      height: 20px;
+      margin-top: 12px;
+      white-space: nowrap;
+    }
+
     .scroll {
       display: inline-block;
-      height: 300px;
+      height: 180px;
       width: 390px;
       margin: 0 25px;
       overflow: hidden;
@@ -102,7 +118,7 @@
 
     <div class="scroll">
       <div>单步停顿</div>
-      <vue3-seamless-scroll :list="list" :singleHeight="30">
+      <vue3-seamless-scroll :list="list" :single-height="30">
         <div class="item" v-for="(item, index) in list" :key="index">
           <span>{{ item.title }}</span>
           <span>{{ item.date }}</span>
@@ -112,7 +128,7 @@
 
     <div class="scroll">
       <div>单行停顿时间</div>
-      <vue3-seamless-scroll :list="list" :singleHeight="30" :singleWaitTime="3000">
+      <vue3-seamless-scroll :list="list" :single-height="30" :single-waitTime="3000">
         <div class="item" v-for="(item, index) in list" :key="index">
           <span>{{ item.title }}</span>
           <span>{{ item.date }}</span>
@@ -165,6 +181,41 @@
         </template>
       </vue3-seamless-scroll>
     </div>
+    <div class="scroll" :style="{height: `${height}px`}">
+      <div>父级div高度改变</div>
+      <vue3-seamless-scroll :list="list" :ease="ease" ref="testRef">
+        <div class="item" v-for="(item, index) in list" :key="index">
+          <span>{{ item.title }}</span>
+          <span>{{ item.date }}</span>
+        </div>
+      </vue3-seamless-scroll>
+    </div>
+    <div class="scroll">
+      <div>未达到滚动条件直接显示原有的数据</div>
+      <vue3-seamless-scroll :list="list2" :ease="ease" :limit-scroll-num="7">
+        <div class="item" v-for="(item, index) in list2" :key="index">
+          <span>{{ item.title }}</span>
+          <span>{{ item.date }}</span>
+        </div>
+      </vue3-seamless-scroll>
+    </div>
+    <div class="scroll">
+      <div>异步数据触发滚动</div>
+      <vue3-seamless-scroll :list="syacList" :ease="ease">
+        <div class="item" v-for="(item, index) in syacList" :key="index">
+          <span>{{ item.title }}</span>
+          <span>{{ item.date }}</span>
+        </div>
+      </vue3-seamless-scroll>
+    </div>
+    <div>
+      <div style="font-weight: bold; color: red; text-align: center;">单行滚动</div>
+      <div class="singleLine">
+        <vue3-seamless-scroll :list="list" direction="left" :single-line="true">
+          <span v-for="(item, index) in list" :key="index">{{ item.title }}</span>
+        </vue3-seamless-scroll>
+      </div>
+    </div>
   </div>
   <script>
     const listData = [
@@ -186,22 +237,6 @@
       },
       {
         title: "Vue3.0 无缝滚动组件展示数据第5条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第6条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第7条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第8条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第9条",
         date: Date.now(),
       },
     ];
@@ -226,22 +261,6 @@
         title: "Vue3.0 无缝滚动组件展示数据第5条",
         date: Date.now(),
       },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第6条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第7条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第8条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第9条",
-        date: Date.now(),
-      },
     ];
     const listData2 = [
       {
@@ -264,22 +283,6 @@
         title: "Vue3.0 无缝滚动组件展示数据第5条",
         date: Date.now(),
       },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第6条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第7条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第8条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第9条",
-        date: Date.now(),
-      },
     ];
     const vue3Composition = {
       name: "example",
@@ -287,6 +290,7 @@
         const list = Vue.ref(listData);
         const list1 = Vue.ref(listData1);
         const list2 = Vue.ref(listData2);
+        const syacList = Vue.ref();
         const scroll = Vue.ref(false);
         const count = Vue.ref(1);
         const ease = Vue.ref({
@@ -294,21 +298,31 @@
           y1: 0,
           x2: 1,
           y2: 1,
-        })
+        });
+        const height = Vue.ref(500);
+        let timer1;
 
         Vue.onMounted(() => {
-          setInterval(() => {
-            list1.value[1].title = "我是第2条更新数据";
-            list1.value[5].title = "我是第6条更新数据";
-            list1.value[7].title = "我是第8条更新数据";
-          }, 1000);
+          setTimeout(() => {
+            syacList.value = listData
+            height.value = 180;
+          }, 5000);
 
           setInterval(() => {
+            list1.value[1].date =  Date.now();
+            list1.value[3].date = Date.now();
+          }, 2000);
+
+          timer1 = setInterval(() => {
             list2.value.push({
-              title: "我是新增的一条数据",
+              title: "Vue3.0 无缝滚动组件展示数据第 "+(list2.value.length+1)+" 条",
               date: Date.now(),
             });
+            if (list2.value.length === 9) {
+              clearInterval(timer1)
+            }
           }, 2000);
+
           setInterval(() => {
             scroll.value = !scroll.value;
           }, 3000);
@@ -331,11 +345,13 @@
           list,
           list1,
           list2,
+          syacList,
           scroll,
           count,
           onCount,
           onClick,
-          ease
+          ease,
+          height,
         }
       }
     };

@@ -1,5 +1,5 @@
 <template>
-  <!-- <div class="scroll">
+  <div class="scroll">
     <div>默认配置</div>
     <vue3-seamless-scroll :list="list" :ease="ease">
       <div class="item" v-for="(item, index) in list" :key="index">
@@ -27,7 +27,7 @@
     </vue3-seamless-scroll>
   </div>
 
-  <div class="scroll" style="width: 530px;">
+  <div class="scroll" style="width: 400px;">
     <div>向左滚动</div>
     <vue3-seamless-scroll :list="list" direction="left">
       <div class="item" v-for="(item, index) in list" :key="index">
@@ -45,9 +45,9 @@
         <span>{{ item.date }}</span>
       </div>
     </vue3-seamless-scroll>
-  </div> -->
+  </div>
 
-  <!-- <div class="scroll">
+   <div class="scroll">
     <div>鼠标悬停</div>
     <vue3-seamless-scroll :list="list" hover wheel>
       <div class="item" v-for="(item, index) in list" :key="index">
@@ -55,15 +55,9 @@
         <span>{{ item.date }}</span>
       </div>
     </vue3-seamless-scroll>
-  </div> -->
-
-  <div class="scroll">
-    <vue3-seamless-scroll :list="list" direction="left" :singleLine="true">
-      <span v-for="(item, index) in list" :key="index">{{ item.title }}</span>
-    </vue3-seamless-scroll>
   </div>
 
-  <!-- <div class="scroll">
+  <div class="scroll">
     <div>单步停顿</div>
     <vue3-seamless-scroll :list="list" :singleHeight="27">
       <div class="item" v-for="(item, index) in list" :key="index">
@@ -127,7 +121,42 @@
         </div>
       </template>
     </vue3-seamless-scroll>
-  </div> -->
+  </div>
+  <div class="scroll">
+    <div>未达到滚动条件直接显示原有的数据</div>
+    <vue3-seamless-scroll :list="list2" :ease="ease" :limitScrollNum="6">
+      <div class="item" v-for="(item, index) in list2" :key="index">
+        <span>{{ item.title }}</span>
+        <span>{{ item.date }}</span>
+      </div>
+    </vue3-seamless-scroll>
+  </div>
+  <div class="scroll">
+    <div>异步数据触发滚动</div>
+    <vue3-seamless-scroll :list="syacList" :ease="ease">
+      <div class="item" v-for="(item, index) in syacList" :key="index">
+        <span>{{ item.title }}</span>
+        <span>{{ item.date }}</span>
+      </div>
+    </vue3-seamless-scroll>
+  </div>
+  <div class="scroll" :style="{height: `${height}px`}">
+    <div>父级div高度改变</div>
+    <vue3-seamless-scroll :list="list" :ease="ease">
+      <div class="item" v-for="(item, index) in list" :key="index">
+        <span>{{ item.title }}</span>
+        <span>{{ item.date }}</span>
+      </div>
+    </vue3-seamless-scroll>
+  </div>
+  <div>
+    <div style="font-weight: bold; color: red; text-align: center;">单行滚动</div>
+    <div class="singleLine">
+      <vue3-seamless-scroll :list="list" direction="left" :singleLine="true">
+        <span v-for="(item, index) in list" :key="index">{{ item.title }}</span>
+      </vue3-seamless-scroll>
+    </div> 
+  </div>
 </template>
 <script lang="ts">
 const listData = [
@@ -149,22 +178,6 @@ const listData = [
   },
   {
     title: "Vue3.0 无缝滚动组件展示数据第 5 条",
-    date: Date.now(),
-  },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 6 条",
-    date: Date.now(),
-  },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 7 条",
-    date: Date.now(),
-  },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 8 条",
-    date: Date.now(),
-  },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 9 条",
     date: Date.now(),
   },
 ];
@@ -189,22 +202,6 @@ const listData1 = [
     title: "Vue3.0 无缝滚动组件展示数据第 5 条",
     date: Date.now(),
   },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 6 条",
-    date: Date.now(),
-  },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 7 条",
-    date: Date.now(),
-  },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 8 条",
-    date: Date.now(),
-  },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 9 条",
-    date: Date.now(),
-  },
 ];
 const listData2 = [
   {
@@ -227,22 +224,6 @@ const listData2 = [
     title: "Vue3.0 无缝滚动组件展示数据第 5 条",
     date: Date.now(),
   },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 6 条",
-    date: Date.now(),
-  },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 7 条",
-    date: Date.now(),
-  },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 8 条",
-    date: Date.now(),
-  },
-  {
-    title: "Vue3.0 无缝滚动组件展示数据第 9 条",
-    date: Date.now(),
-  },
 ];
 import { defineComponent, ref, onMounted } from "vue";
 import { Vue3SeamlessScroll } from "../package/index";
@@ -256,6 +237,7 @@ export default defineComponent({
     const list = ref(listData);
     const list1 = ref(listData1);
     const list2 = ref(listData2);
+    const syacList = ref();
     const scroll = ref(false);
     const count = ref(1);
     const ease = ref({
@@ -264,21 +246,30 @@ export default defineComponent({
       x2: 1,
       y2: 1,
     });
-    const notScroll = ref(false);
+    const height = ref(500);
+    let timer1: NodeJS.Timer;
 
     onMounted(() => {
-      setInterval(() => {
-        list1.value[1].title = "我是第 2 条更新数据";
-        list1.value[5].title = "我是第 6 条更新数据";
-        list1.value[7].title = "我是第 8 条更新数据";
-      }, 1000);
+      setTimeout(() => {
+        syacList.value = listData
+        height.value = 180;
+      }, 5000);
 
       setInterval(() => {
+        list1.value[1].date =  Date.now();
+        list1.value[3].date = Date.now();
+      }, 2000);
+
+      timer1 = setInterval(() => {
         list2.value.push({
-          title: "我是新增的一条数据",
+          title: "Vue3.0 无缝滚动组件展示数据第 "+(list2.value.length+1)+" 条",
           date: Date.now(),
         });
+        if (list2.value.length === 9) {
+          clearInterval(timer1)
+        }
       }, 2000);
+
       setInterval(() => {
         scroll.value = !scroll.value;
       }, 3000);
@@ -301,18 +292,19 @@ export default defineComponent({
       list,
       list1,
       list2,
+      syacList,
       scroll,
       count,
       onCount,
       onClick,
       ease,
-      notScroll,
+      height,
     };
   },
 });
 </script>
 <style>
-.scroll {
+.singleLine {
   display: flex;
   flex-direction: row;
   height: 40px;
@@ -321,11 +313,40 @@ export default defineComponent({
   position: relative;
 }
 
-span {
+.singleLine span {
   display: inline-block;
   height: 20px;
   margin-top: 12px;
   white-space: nowrap;
+}
+
+.scroll {
+  display: inline-block;
+  height: 180px;
+  width: 390px;
+  margin: 0 25px;
+  overflow: hidden;
+  position: relative;
+}
+
+.scroll>div:first-child {
+  font-weight: bold;
+  color: red;
+  text-align: center;
+}
+
+.scroll>div:last-child {
+  margin-top: 15px;
+  height: 260px;
+  overflow: hidden;
+}
+
+.scroll .item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 0;
+  cursor: pointer;
 }
 
 * {
