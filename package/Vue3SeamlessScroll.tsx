@@ -363,7 +363,7 @@ const Vue3SeamlessScroll = defineComponent({
       () => props.hover && props.modelValue && isScroll.value
     );
 
-    const throttleFunc = throttle(30, undefined, (e: WheelEvent) => {
+    const throttleFunc = throttle(30, (e: WheelEvent) => {
       cancle();
       const singleHeight = !!realSingleStopHeight.value
         ? realSingleStopHeight.value
