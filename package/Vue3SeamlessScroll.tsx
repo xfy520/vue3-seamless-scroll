@@ -390,7 +390,17 @@ const Vue3SeamlessScroll = defineComponent({
       reset()
     }
 
-    useExpose({ Reset })
+    // 增加控制横向滚动距离方法
+    const moveX = (pos: number) => {
+      xPos.value = pos;
+    }
+    // 增加控制纵向滚动距离方法
+    const moveY = (pos: number) => {
+      yPos.value = pos;
+    }
+
+    // 增加控制滚动距离方法
+    useExpose({ Reset, moveX, moveY })
 
     watch(
       () => props.list,
