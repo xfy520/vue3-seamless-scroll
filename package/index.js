@@ -1,7 +1,9 @@
-import Vue3SeamlessScroll from "./Vue3SeamlessScroll.tsx"
+import VerticalScroll from './VerticalScroll.vue';
+import HorizontalScroll from './HorizontalScroll.vue';
 
 const install = function (app, options = {}) {
-  app.component(options.name || Vue3SeamlessScroll.name, Vue3SeamlessScroll);
+  app.component(options.name || VerticalScroll.name, VerticalScroll);
+  app.component(options.name || HorizontalScroll.name, HorizontalScroll);
 }
 
 export default function (app) {
@@ -9,5 +11,6 @@ export default function (app) {
 }
 
 export {
-  Vue3SeamlessScroll
+  VerticalScroll,
+  HorizontalScroll
 }
