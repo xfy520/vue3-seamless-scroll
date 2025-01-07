@@ -5,16 +5,21 @@
         <slot :data="item.data" :index="item.index"> </slot>
       </div>
     </div>
+    <div style="position: absolute; left: -999999px; width: 100%;" ref="realWrapperHiddenRef">
+      <div v-for="item in testList" :key="item.id">
+        <slot :data="item.data" :index="item.index"> </slot>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import {
   computed, defineComponent, onMounted, ref,
-  onUnmounted, nextTick, watch
+  onUnmounted, nextTick
 } from 'vue';
 
-import { throttle, listMap } from './util';
+import { throttle, listMap, duplicateId, uuid } from './util';
 
 export default defineComponent({
   name: 'VerticalScroll',
@@ -48,16 +53,13 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    step: {
+    speed: {
       type: Number,
-      default: 0.01,
+      default: 0.5,
     },
     visibleCount: {
       type: Number,
-    },
-    bufferSize: {
-      type: Number,
-      default: 5,
+      required: true,
     },
     upScroll: {
       type: Boolean,
@@ -73,13 +75,16 @@ export default defineComponent({
     * @type {import('vue').Ref<HTMLDivElement>}
     */
     const realWrapperRef = ref(null);
+    /**
+    * @type {import('vue').Ref<HTMLDivElement>}
+    */
+    const realWrapperHiddenRef = ref(null);
 
-    const visibleCount = ref(props.visibleCount);
+    const bufferSize = ref(0);
 
-    const targetData = ref({
-      list: listMap(props.list),
-      bufferSize: props.bufferSize
-    });
+    const funArgs = ref([]);
+
+    const targetList = listMap(props.list);
 
     const cursorIndex = ref(-1);
 
@@ -101,11 +106,13 @@ export default defineComponent({
 
     const tempOffset = ref(0);
 
-    const scrollState = ref(false);
+    const listCanScroll = ref(false);
+
+    const skipUpdate = ref(false);
 
     const isScroll = computed(() => props.hover ? !isHover.value && props.modelValue : props.modelValue);
 
-    const funs = ref([]);
+    const testList = ref(listMap(props.list.slice(0, props.visibleCount)));
 
     const cancle = () => {
       cancelAnimationFrame(reqFrame.value);
@@ -115,6 +122,10 @@ export default defineComponent({
     const animation = (isWheel, isUp, speed) => {
       cancle();
 
+      if (!listCanScroll.value) {
+        return;
+      }
+
       const scrollFun = () => {
         if (props.singleLine && singleOffset.value >= childrenHeightList.value[0]) {
           singleState.value = true;
@@ -123,16 +134,15 @@ export default defineComponent({
           setTimeout(() => {
             singleState.value = false;
             if (!isWheel) {
-              animation(false, props.upScroll, props.step);
+              animation(false, props.upScroll, props.speed);
             }
           }, props.singleWaitTime);
         } else {
           if (!isWheel) {
-            animation(false, props.upScroll, props.step);
+            animation(false, props.upScroll, props.speed);
           }
         }
       }
-
       if (isScroll.value && !singleState.value || isWheel) {
         reqFrame.value = requestAnimationFrame(() => {
           tempOffset.value += speed;
@@ -143,20 +153,31 @@ export default defineComponent({
             offset.value -= speed;
           }
           if (tempOffset.value > bufferTotalHeight.value) {
-            if ((cursorIndex.value + targetData.value.bufferSize) > targetData.value.list.length) {
-              const tempIndex = (cursorIndex.value + targetData.value.bufferSize) - targetData.value.list.length;
-              funs.value = ['splice', [0, targetData.value.bufferSize], [cursorIndex.value], [0, tempIndex]];
-              cursorIndex.value = tempIndex;
+            const totalIndex = cursorIndex.value + bufferSize.value;
+            if (totalIndex >= targetList.length) {
+              const tempIndex = totalIndex - targetList.length;
+              const tempFuns = ['splice',
+                [0, bufferSize.value],
+                [cursorIndex.value],
+                [0, tempIndex]];
+              funArgs.value = tempFuns;
+              if (tempIndex > targetList.length) {
+                cursorIndex.value = targetList.length;
+              } else {
+                cursorIndex.value = tempIndex;
+              }
             } else {
-              funs.value = ['splice', [0, targetData.value.bufferSize], [cursorIndex.value, cursorIndex.value + targetData.value.bufferSize]];
-              cursorIndex.value = cursorIndex.value + targetData.value.bufferSize;
+              const tempFuns = ['splice', [0, bufferSize.value], [cursorIndex.value, totalIndex]];
+              funArgs.value = tempFuns;
+              cursorIndex.value = totalIndex;
             }
             nextTick(() => {
               tempOffset.value = 0;
               offset.value = isUp ? 0 : realBoxHeight.value;
+
               const children = isUp ? Array.from(realWrapperRef.value.children)
-                .slice(0, targetData.value.bufferSize) : Array.from(realWrapperRef.value.children)
-                  .slice(visibleItems.value.length - targetData.value.bufferSize, visibleItems.value.length);
+                .slice(0, bufferSize.value) : Array.from(realWrapperRef.value.children)
+                  .slice(visibleItems.value.length - bufferSize.value, visibleItems.value.length);
               childrenHeightList.value = children.map((children) => children.offsetHeight);
               bufferTotalHeight.value = childrenHeightList.value
                 .reduce((a, b) => a + b, 0);
@@ -177,7 +198,7 @@ export default defineComponent({
     const onMouseleave = () => {
       isHover.value = false;
       if (props.hover) {
-        animation(false, props.upScroll, props.step);
+        animation(false, props.upScroll, props.speed);
       }
     }
 
@@ -200,28 +221,63 @@ export default defineComponent({
      * @type {import('vue').ComputedRef<Array<any>>}
      */
     const visibleItems = computed(() => {
-      if (cursorIndex.value === -1) {
-        return [targetData.value.list[0]];
+      if (skipUpdate.value) {
+        skipUpdate.value = false;
+        return visibleItems.value;
       }
       let tempList = [];
-      if (targetData.value.bufferSize === 0) {
-        tempList = targetData.value.list;
-      } else if (funs.value[0] === 'splice') {
+      if (funArgs.value.length === 0) {
+        tempList = targetList.slice(0, props.visibleCount);
+      } else if (funArgs.value[0] === 'splice') {
         tempList = props.upScroll ? visibleItems.value : visibleItems.value.reverse();
-        tempList.splice(...funs.value[1]);
-        funs.value.slice(2).forEach(args => {
-          tempList.push(...targetData.value.list.slice(...args));
+        tempList.splice(...funArgs.value[1]);
+        funArgs.value.slice(2).forEach(args => {
+          tempList.push(...targetList.slice(...args));
         });
       } else {
-        funs.value.slice(1).forEach(args => {
-          tempList.push(...targetData.value.list.slice(...args));
+        funArgs.value.slice(1).forEach(args => {
+          tempList.push(...targetList.slice(...args));
         });
       }
+      console.log('---', funArgs.value, '===', tempList);
       if (!props.upScroll) {
         tempList.reverse();
       }
-      return tempList;
+      return duplicateId(tempList);
     });
+
+
+    const initCursorIndex = () => {
+      cursorIndex.value = props.visibleCount + bufferSize.value;
+      if (cursorIndex.value >= targetList.length) {
+        const tempIndex = cursorIndex.value - targetList.length;
+        const tempFunArgs = ['slice', [0, cursorIndex.value], [0, tempIndex]];
+        if (tempIndex > targetList.length) {
+          cursorIndex.value = targetList.length;
+        } else {
+          cursorIndex.value = tempIndex;
+        }
+        return tempFunArgs;
+      } else {
+        return ['slice', [0, cursorIndex.value]];
+      }
+    }
+
+    const initHeight = (element) => {
+      const children = Array.from(element.children);
+      const subChildren = props.upScroll ?
+        children.slice(0, bufferSize.value) :
+        children.slice(visibleItems.value.length - bufferSize.value, visibleItems.value.length);
+      childrenHeightList.value = subChildren.map((c) => c.offsetHeight);
+      bufferTotalHeight.value = childrenHeightList.value
+        .reduce((a, b) => a + b, 0);
+    }
+
+    const resetData = () => {
+      bufferSize.value = 0;
+      funArgs.value = [];
+      listCanScroll.value = false;
+    }
 
     onMounted(() => {
       realBoxRef.value.addEventListener('mouseenter', onMouseenter);
@@ -231,84 +287,146 @@ export default defineComponent({
 
       offset.value = props.upScroll ? 0 : realBoxHeight.value;
 
-      if (visibleCount.value === (void 0)) {
-        const firstChildHeight = props.upScroll ? realWrapperRef.value.firstElementChild.offsetHeight
-          : realWrapperRef.value.lastElementChild.offsetHeight;
-        visibleCount.value = Math.floor(realBoxHeight.value / firstChildHeight);
-      }
-      if (visibleCount.value + targetData.value.bufferSize > targetData.value.list.length) {
-        targetData.value.bufferSize = targetData.value.list.length - visibleCount.value;
-      }
-      cursorIndex.value = visibleCount.value + targetData.value.bufferSize;
-
-      if (cursorIndex.value > targetData.value.list.length) {
-        const tempIndex = cursorIndex.value - targetData.value.list.length;
-        const tempFuns = ['slice', [0, cursorIndex.value], [0, tempIndex]]
-        funs.value = tempFuns;
-        cursorIndex.value = tempIndex;
-      } else {
-        funs.value = ['slice', [0, cursorIndex.value]];
-      }
-
       nextTick(() => {
-        const children = Array.from(realWrapperRef.value.children);
-
-        const subChildren = props.upScroll ?
-          children.slice(0, targetData.value.bufferSize) :
-          children.slice(visibleItems.value.length - targetData.value.bufferSize, visibleItems.value.length);
-
-        childrenHeightList.value = subChildren.map((c) => c.offsetHeight);
-
-        bufferTotalHeight.value = childrenHeightList.value
-          .reduce((a, b) => a + b, 0);
-
-        const hasVerticalScroll = realBoxRef.value.scrollHeight > realBoxRef.value.offsetHeight;
+        const hasVerticalScroll = realWrapperHiddenRef.value.offsetHeight > realBoxHeight.value;
         if (hasVerticalScroll) {
-          scrollState.value = true;
-          animation(false, props.upScroll, props.step);
+          let tempBufferSize = Math.max(1, targetList.length - props.visibleCount);
+          bufferSize.value = Math.min(5, tempBufferSize);
+          funArgs.value = initCursorIndex();
+          initHeight(realWrapperHiddenRef.value);
+          listCanScroll.value = true;
+          animation(false, props.upScroll, props.speed);
+        } else {
+          resetData();
+        }
+        testList.value = [];
+      });
+    });
+
+    const reset = () => {
+      offset.value = props.upScroll ? 0 : realBoxHeight.value;
+      tempOffset.value = 0;
+      singleOffset.value = 0;
+    }
+
+    const add = (index, value) => {
+      if (index > targetList.length) {
+        index = targetList.length;
+      }
+
+      const findIndexs = [];
+
+      visibleItems.value.forEach((v, i) => {
+        if (v.index === index) {
+          findIndexs.push(i);
         }
       });
-    });
 
-    watch(props.list, (nVal) => {
-      let tempBufferSize = targetData.value.bufferSize;
-      if (visibleCount.value + tempBufferSize > nVal.length) {
-        tempBufferSize = nVal.length - visibleCount.value;
+      const data = {
+        id: uuid(),
+        index: index,
+        data: value
       }
 
-      targetData.value = {
-        list: listMap(nVal),
-        bufferSize: tempBufferSize <= 0 ? 0 : tempBufferSize
-      }
-    });
+      targetList.splice(index, 0, data);
 
-
-    const add = (index, data) => {
-      const findValue = visibleItems.value.find((v) => v.index === index);
-      const findIndex = visibleItems.value.findIndex((v) => v.index === index);
-      if (!!findValue && findIndex > -1) {
-
-      } else {
-
-      }
-
-      targetData.value.list.splice(index, 0, {
-        id: data.id !== (void 0) ? data.id : Date.now()
+      targetList.forEach((v, i) => {
+        v.index = i;
       });
 
+      let tempBufferSize = targetList.length - props.visibleCount;
+      tempBufferSize = Math.max(1, tempBufferSize);
+      tempBufferSize = Math.min(5, tempBufferSize);
+
+      if (listCanScroll.value) {
+        if (index < cursorIndex.value) {
+          cursorIndex.value += 1;
+          if (cursorIndex.value > targetList.length) {
+            cursorIndex.value = 0;
+          }
+        }
+
+        if (findIndexs.length > 0) {
+          findIndexs.forEach((i) => {
+            visibleItems[i] = data;
+          })
+        }
+        if (tempBufferSize !== bufferSize.value) {
+          bufferSize.value = tempBufferSize;
+        }
+      } else {
+        testList.value = targetList.slice(0, props.visibleCount);
+        nextTick(() => {
+          const hasVerticalScroll = realWrapperHiddenRef.value.offsetHeight > realBoxHeight.value;
+          if (hasVerticalScroll) {
+            bufferSize.value = tempBufferSize;
+            funArgs.value = initCursorIndex();
+            reset();
+            initHeight(realWrapperHiddenRef.value);
+            listCanScroll.value = true;
+            animation(false, props.upScroll, props.speed);
+          } else {
+            reset();
+            resetData();
+          }
+          testList.value = [];
+        })
+      }
     }
 
     const remove = (index) => {
+      const list = [...targetData.value.list];
+      if (index >= 0 && index < list.length) {
+        list.splice(index, 1);
+        if (listCanScroll.value) {
+          testList.value = list.slice(0, props.visibleCount);
+          nextTick(() => {
+            const hasVerticalScroll = realWrapperHiddenRef.value.offsetHeight > realBoxHeight.value;
+            if (hasVerticalScroll) {
+              let tempBufferSize = list.length - props.visibleCount;
+              tempBufferSize = Math.max(1, tempBufferSize);
+              tempBufferSize = Math.min(5, tempBufferSize);
 
+              if (tempBufferSize !== bufferSize.value) {
+                bufferSize.value = tempBufferSize;
+              }
+
+            } else {
+              reset();
+              resetData(list);
+            }
+            testList.value = [];
+          })
+        } else {
+
+        }
+      }
     }
 
 
     const update = (index, value) => {
-
+      if (index >= 0 && index < targetList.length) {
+        const findIndexs = [];
+        visibleItems.value.forEach((v, i) => {
+          if (v.index === index) {
+            findIndexs.push(i);
+          }
+        });
+        const data = {
+          id: uuid(),
+          index: index,
+          data: value
+        };
+        targetList[index] = data;
+        if (findIndexs.length > 0) {
+          findIndexs.forEach((i) => {
+            visibleItems[i] = data;
+          })
+        }
+      }
     }
 
     expose({ add, remove, update });
-
 
     onUnmounted(() => {
       cancelAnimationFrame(reqFrame.value);
@@ -324,6 +442,8 @@ export default defineComponent({
       realWrapperRef,
       visibleItems,
       offset,
+      testList,
+      realWrapperHiddenRef
     }
   }
 });

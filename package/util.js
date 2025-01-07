@@ -9,10 +9,39 @@ function throttle(delay, func) {
   };
 }
 
+const uuid = () => {
+  return crypto.randomUUID().replaceAll('-', '');
+}
+
+function duplicateId(list) {
+  const seen = new Set();
+  const duplicates = new Set();
+
+  list.forEach(item => {
+    if (seen.has(item.id)) {
+      duplicates.add(item);
+    } else {
+      seen.add(item.id);
+    }
+  });
+  if (duplicates.size > 0) {
+    list.forEach(item => {
+      item.id = uuid();
+    });
+  }
+
+  return list;
+}
+
+/**
+ * 
+ * @param {Array} list 
+ * @returns {Array}
+ */
 function listMap(list) {
   return list.map((data, index) => {
     return {
-      id: data.id !== (void 0) ? data.id : index,
+      id: uuid(),
       index,
       data
     }
@@ -21,5 +50,7 @@ function listMap(list) {
 
 export {
   listMap,
-  throttle
+  throttle,
+  duplicateId,
+  uuid
 }
