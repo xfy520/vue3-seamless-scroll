@@ -1,7 +1,8 @@
 <template>
-  <!-- <div class="scroll">
+  <!-- <div class="scroll" :style="{ height: `${height}px` }">
     <div>默认配置</div>
-    <VerticalScroll :list="list" :speed="0.3" :visibleCount="10" ref="verticalScrollRef">
+    <VerticalScroll :list="list" :speed="0.3" :visibleCount="10" ref="verticalScrollRef1"
+      :style="{ height: `${height}px` }">
       <template v-slot="{ data, index }">
         <span style="width: 100%; display: block; line-height: 30px;">
           <template v-if="data.id % 2 === 0">
@@ -29,7 +30,7 @@
 </div>
 <div class="scroll">
   <div>单步</div>
-  <VerticalScroll :list="list" :speed="1" singleLine :visibleCount="10" ref="verticalScrollRef">
+  <VerticalScroll :list="list" :speed="1" singleLine :visibleCount="10" ref="verticalScrollRef2">
     <template v-slot="{ data, index }">
         <span style="width: 100%; display: block; line-height: 30px;">
           <template v-if="data.id % 2 === 0">
@@ -54,47 +55,60 @@
         </template>
     </VerticalScroll>
   </div>
-</div> -->
-  <div class="scroll">
-    <div>向上</div>
-    <VerticalScroll :list="list" :speed="0.2" :visibleCount="6" ref="verticalScrollRef">
-      <template v-slot="{ data, index }">
+</div>
+<div class="scroll">
+  <div>向下</div>
+  <VerticalScroll :list="list" :speed="1" :visibleCount="6" ref="verticalScrollRef3" :upScroll="false">
+    <template v-slot="{ data, index }">
         <span style="width: 100%; display: block; line-height: 30px;">
           <template v-if="data.id % 2 === 0">
             <div>{{ data.name }}</div>
           </template>
-          <template v-else>
+    <template v-else>
             <div>{{ data.name }}</div>
             <div>{{ data.name }}</div>
           </template>
-        </span>
+    </span>
+    </template>
+  </VerticalScroll>
+</div> -->
+
+  <div style="width: 200px; height: 368px; overflow: hidden; white-space: nowrap;">
+    <div>默认配置</div>
+    <HorizontalScroll :list="list" :speed="0.5" :visibleCount="7" :leftScroll="false" ref="verticalScrollRef">
+      <template v-slot="{ data, index }">
+        <div style="writing-mode: vertical-rl; text-orientation: upright; width: 30px; display: inline-block;">
+          {{ data.name }}
+        </div>
       </template>
-    </VerticalScroll>
+    </HorizontalScroll>
   </div>
 </template>
 <script lang="ts">
-const listData = Array.from({ length: 10 }, (_, i) => ({
+const listData = Array.from({ length: 10000 }, (_, i) => ({
   id: Date.now() + i + 1,
   name: `Vue3.0 无缝滚动组件展示数据第 ${i + 1} 条`,
 }));
 import { defineComponent, onMounted, ref } from 'vue';
-import { VerticalScroll } from '../package/index';
+import { VerticalScroll, HorizontalScroll } from '../package/index';
 
 export default defineComponent({
   name: "App",
   components: {
-    VerticalScroll
+    VerticalScroll,
+    HorizontalScroll
   },
   setup() {
     const list = ref(listData);
+    const height = ref(180);
     const verticalScrollRef = ref();
     onMounted(() => {
-      // setTimeout(() => {
-      //   verticalScrollRef.value.add(2, {
-      //     id: 5,
-      //     name: `Vue3.0 无缝滚动组件展示数据第 ${Date.now()} 条`
-      //   })
-      // }, 1000);
+      setTimeout(() => {
+        verticalScrollRef.value.add(2, [{
+          id: 5,
+          name: `Vue3.0 无缝滚动组件展示数据第 ${Date.now()} 条`
+        }])
+      }, 1000);
       // setTimeout(() => {
       //   verticalScrollRef.value.add(5, {
       //     id: 6,
@@ -107,9 +121,9 @@ export default defineComponent({
       //     name: `Vue3.0 无缝滚动组件展示数据第 ${Date.now()} 条`
       //   })
       // }, 5000);
-      setTimeout(() => {
-        verticalScrollRef.value.remove(6);
-      }, 10000);
+      // setTimeout(() => {
+      //   verticalScrollRef.value.remove(6);
+      // }, 10000);
       // setTimeout(() => {
       //   verticalScrollRef.value.update(1,
       //     {
@@ -118,10 +132,14 @@ export default defineComponent({
       //     }
       //   );
       // }, 1000);
+      setTimeout(() => {
+        // verticalScrollRef1.value.reset();
+      }, 3000);
     })
 
     return {
       list,
+      height,
       verticalScrollRef
     };
   },
