@@ -27,5 +27,3 @@ export default () => defineConfig({
     }
   },
 })
-
-// @rollup/plugin-node-resolve @rollup/plugin-terser  @rollup/plugin-babel rimraf @rollup/plugin-commonjs

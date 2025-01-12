@@ -4,6 +4,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import pluginVue from 'rollup-plugin-vue'
 import postcss from 'rollup-plugin-postcss'
 import terser from '@rollup/plugin-terser'
+import strip from '@rollup/plugin-strip'
 
 module.exports = {
   input: path.resolve(__dirname, './package/index.js'),
@@ -40,6 +41,10 @@ module.exports = {
     warn(warning);
   },
   plugins: [
+    strip({
+      include: ['**/*.js'],
+      functions: ['console.log', 'assert'],
+    }),
     resolve(),
     pluginVue(),
     commonjs(),

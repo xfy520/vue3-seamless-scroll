@@ -2,18 +2,14 @@ type propType = {
   modelValue: boolean,
   list: Array<unknown>,
   step: number,
-  limitScrollNum: number,
   hover: boolean,
   direction: String,
-  singleHeight: number,
-  singleWidth: number,
   singleWaitTime: number,
-  isRemUnit: boolean,
-  isWatch: boolean,
   delay: number,
-  count: number,
+  visibleCount: number,
   wheel: boolean,
   singleLine: boolean,
+  ease: string,
 };
 
 export default propType
