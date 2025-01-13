@@ -1,16 +1,10 @@
 # vue3-seamless-scroll
 
-Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
+Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包，[更多使用方式看例子](https://github.com/xfy520/vue3-seamless-scroll/blob/v3.1/src/App.vue)
+
+[老版本文档](https://github.com/xfy520/vue3-seamless-scroll/blob/v3/README.md)
 
 > 目前组件支持上下左右无缝滚动，单步滚动，并且支持复杂图标的无缝滚动，目前组件支持平台与`Vue3.0`支持平台一致。
-
-## 效果展示
-
-<div align=center>
-
-![image](/example/1.gif)
-
-</div>
 
 ## 安装
 
@@ -29,18 +23,27 @@ Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
 - `browser`
 
   ```html
-  <script src="https://unpkg.com/browse/vue3-seamless-scroll@1.0.2/dist/vue3-seamless-scroll.min.js"></script>
+  <script src="https://unpkg.com/browse/vue3-seamless-scroll@3.0.0/dist/vue3-seamless-scroll.min.js"></script>
   ```
 
 ## 组件配置
 
 - `list`
 
-  > 无缝滚动列表数据，组件内部使用列表长度。
+  > 无缝滚动列表数据。
 
   ```json
     type: Array
     required: true
+  ```
+
+- `visibleCount`
+
+  > 满足多少条数据时开启滚动，当每一条数据高度或者宽度一致时组件内会自动计算，否则最好手动指定
+
+  ```json
+    type: Number
+    required: false
   ```
 
 - `v-model`
@@ -63,16 +66,6 @@ Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
     required: false
   ```
 
-- `isWatch`
-
-  > 开启数据更新监听
-
-  ```json
-    type: Boolean,
-    default: true,
-    required: false
-  ```
-
 - `hover`
 
   > 是否开启鼠标悬停
@@ -83,52 +76,13 @@ Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
     required: false
   ```
 
-- `count`
-
-  > 动画循环次数，默认无限循环
-
-  ```json
-    type: Number,
-    default: "infinite",
-    required: false
-  ```
-
-- `limitScrollNum`
-
-  > 开启滚动的数据量，只有列表长度大于等于该值才会滚动
-
-  ```json
-    type: Number,
-    default: 5,
-    required: false
-  ```
-
 - `step`
 
   > 步进速度
 
   ```json
     type: Number,
-    required: false
-  ```
-
-- `singleHeight`
-
-  > 单步运动停止的高度
-
-  ```json
-    type: Number,
-    default: 0,
-    required: false
-  ```
-
-- `singleWidth`
-
-  > 单步运动停止的宽度
-
-  ```json
-    type: Number,
-    default: 0,
+    default: 0.5,
     required: false
   ```
 
@@ -139,16 +93,6 @@ Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
   ```json
     type: Number,
     default: 1000,
-    required: false
-  ```
-
-- `isRemUnit`
-
-  > singleHeight and singleWidth 是否开启 rem 度量
-
-  ```json
-    type: Boolean,
-    default: true,
     required: false
   ```
 
@@ -167,18 +111,8 @@ Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
   > 动画效果，可以传入贝塞尔曲线数值
 
   ```json
-    type: String | cubic-bezier,
-    default: "ease-in",
-    required: false
-  ```
-
-- `copyNum`
-
-  > 拷贝列表次数，默认拷贝一次，当父级高度大于列表渲染高度的两倍时可以通过该参数控制拷贝列表次数达到无缝滚动效果
-
-  ```json
-    type: Number,
-    default: 1,
+    type: String,
+    default: "cubic-bezier(0.03, 0.76, 1, 0.16)",
     required: false
   ```
 
@@ -227,10 +161,12 @@ Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
 ```html
 <script>
   import { defineComponent } from "vue";
-  import { Vue3SeamlessScroll } from "vue3-seamless-scroll";
+  import { Vue3SeamlessScroll, VerticalScroll, HorizontalScroll } from "vue3-seamless-scroll";
    export default defineComponent({
       components: {
-        Vue3SeamlessScroll
+        Vue3SeamlessScroll, // 横竖向
+        VerticalScroll, // 竖向
+        HorizontalScroll // 横向
       }
    })
 </script>
@@ -240,80 +176,76 @@ Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
 
 ```html
 <template>
-  <vue3-seamless-scroll :list="list" class="scroll">
-    <div class="item" v-for="(item, index) in list" :key="index">
-      <span>{{item.title}}</span>
-      <span>{{item.date}}</span>
-    </div>
-  </vue3-seamless-scroll>
+  <div class="vertical-scoll">
+    <vertical-scroll :list="list">
+      <template v-slot="{ data }">
+        <span style="width: 100%; display: block; line-height: 30px;">
+          <div>{{ data.name }}</div>
+        </span>
+      </template>
+    </vertical-scroll>
+  </div>
+  <div class="horizonta-scoll">
+    <horizontal-scroll :list="list">
+      <template v-slot="{ data }">
+        <div class="vertical-text">
+          {{ data.name }}
+        </div>
+      </template>
+    </horizontal-scroll>
+  </div>
+  <div class="vertical-scoll">
+    <vue3-seamless-scroll :list="list">
+      <template v-slot="{ data }">
+        <span style="width: 100%; display: block; line-height: 30px;">
+          <div>{{ data.name }}</div>
+        </span>
+      </template>
+    </vue3-seamless-scroll>
+  </div>
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import { Vue3SeamlessScroll } from "vue3-seamless-scroll";
+import { Vue3SeamlessScroll,VerticalScroll,HorizontalScroll } from "vue3-seamless-scroll";
+
+const listData = Array.from({ length: 10000 }, (_, i) => ({
+  id: Date.now() + i + 1,
+  name: `Vue3.0无缝滚动展示数据第${i + 1}条`,
+}));
 
 export default defineComponent({
   name: "App",
   components: {
-    Vue3SeamlessScroll
+    Vue3SeamlessScroll,
+    VerticalScroll,
+    HorizontalScroll
   },
   setup() {
-    const list = ref([
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第1条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第2条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第3条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第4条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第5条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第6条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第7条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第8条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第9条",
-        date: Date.now(),
-      },
-    ]);
-    return { list };
+    const list = ref(listData);
+    return {
+      list,
+    }
   },
 });
 </script>
 
 <style>
-.scroll {
-  height: 270px;
-  width: 500px;
-  margin: 100px auto;
+.vertical-scoll {
   overflow: hidden;
+  height: 300px;
 }
 
-.scroll .item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 3px 0;
+.horizonta-scoll {
+  overflow: hidden;
+  height: 300px;
+}
+
+
+.vertical-text {
+  height: 300px;
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+  line-height: 30px;
+  display: inline-block;
 }
 </style>
-
-```
