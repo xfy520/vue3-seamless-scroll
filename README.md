@@ -10,7 +10,7 @@ Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
 
 <div align=center>
 
-![image](/example/1.gif)
+![image](https://github.com/xfy520/vue3-seamless-scroll/blob/v3/example/1.gif)
 
 </div>
 
