@@ -1,6 +1,6 @@
 # vue3-seamless-scroll
 
-[最新版本文档]([https://www.google.com](https://github.com/xfy520/vue3-seamless-scroll/tree/v3.1))
+[最新版本文档](https://github.com/xfy520/vue3-seamless-scroll/tree/v3.1)
 
 Vue3.0 无缝滚动组件，支持Vite2.0，支持服务端打包
 
