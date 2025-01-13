@@ -1,0 +1,7 @@
+node_modules
+dist/*.map
+tests
+*.config.js
+*.log
+rollup.config.mjs
+vite.config.mjs

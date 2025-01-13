@@ -15,13 +15,15 @@
 <script>
 import {
   computed, defineComponent, onMounted, ref,
-  onUnmounted, nextTick
+  onUnmounted, nextTick, watch
 } from 'vue';
 
 import { throttle, listMap, duplicateId, uuid } from './util';
 
 export default defineComponent({
   name: 'Vue3SeamlessScroll',
+  emits: ['offset'],
+  inheritAttrs: false,
   props: {
     // 是否开启自动滚动
     modelValue: {
@@ -65,7 +67,7 @@ export default defineComponent({
     },
     // up，down，left，right
     direction: {
-      type: Boolean,
+      type: String,
       default: 'up',
     },
     delay: {
@@ -563,6 +565,12 @@ export default defineComponent({
     }
 
     expose({ add, remove, update, reset });
+
+    watch(() => props.modelValue, (val) => {
+      if (val) {
+        animation(false, props.step);
+      }
+    })
 
     onUnmounted(() => {
       cancelAnimationFrame(reqFrame);

@@ -6,357 +6,1900 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>vue3-seamless-scroll 例子</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-plus@2.9.3/dist/index.css">
+  </link>
+  <script src="https://unpkg.com/vue@3.3.0/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/element-plus@2.9.3/dist/index.full.min.js"></script>
+  <script src="../dist/vue3-seamless-scroll.js"></script>
   <style>
-    .singleLine {
-      display: flex;
-      flex-direction: row;
-      height: 40px;
-      width: 100%;
+    .vertical-scoll {
       overflow: hidden;
-      position: relative;
+      height: 300px;
     }
 
-    .singleLine span {
+    .horizonta-scoll {
+      overflow: hidden;
+      height: 300px;
+    }
+
+
+    .vertical-text {
+      height: 300px;
+      writing-mode: vertical-lr;
+      text-orientation: upright;
+      line-height: 30px;
       display: inline-block;
-      height: 20px;
-      margin-top: 12px;
-      white-space: nowrap;
-    }
-
-    .scroll {
-      display: inline-block;
-      height: 180px;
-      width: 390px;
-      margin: 0 25px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .scroll>div:first-child {
-      font-weight: bold;
-      color: red;
-      text-align: center;
-    }
-
-    .scroll>div:last-child {
-      margin-top: 15px;
-      height: 260px;
-      overflow: hidden;
-    }
-
-    .scroll .item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 3px 0;
-      cursor: pointer;
     }
   </style>
-  <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.js"></script>
-  <script src="../dist/vue3-seamless-scroll.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <div class="scroll">
-      <div>默认配置</div>
-      <vue3-seamless-scroll :list="list" :ease="ease">
-        <div class="item" v-for="(item, index) in list" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-    <div class="scroll">
-      <div>手动控制滚动</div>
-      <vue3-seamless-scroll :list="list" v-model="scroll">
-        <div class="item" v-for="(item, index) in list" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-    <div class="scroll">
-      <div>向下滚动</div>
-      <vue3-seamless-scroll :list="list" direction="down">
-        <div class="item" v-for="(item, index) in list" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-
-    <div class="scroll">
-      <div>向左滚动</div>
-      <vue3-seamless-scroll :list="list" direction="left">
-        <div class="item" v-for="(item, index) in list" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-
-    <div class="scroll">
-      <div>滚动速度</div>
-      <vue3-seamless-scroll :list="list" :step="3">
-        <div class="item" v-for="(item, index) in list" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-
-    <div class="scroll">
-      <div>鼠标悬停</div>
-      <vue3-seamless-scroll :list="list" hover>
-        <div class="item" v-for="(item, index) in list" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-
-    <div class="scroll">
-      <div>单步停顿</div>
-      <vue3-seamless-scroll :list="list" :single-height="30">
-        <div class="item" v-for="(item, index) in list" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-
-    <div class="scroll">
-      <div>单行停顿时间</div>
-      <vue3-seamless-scroll :list="list" :single-height="30" :single-waitTime="3000">
-        <div class="item" v-for="(item, index) in list" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-
-    <div class="scroll">
-      <div>控制滚动，滚动{{count}}次</div>
-      <vue3-seamless-scroll :list="list" :count="count" @count="onCount">
-        <div class="item" v-for="(item, index) in list" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-
-    <div class="scroll">
-      <div>数组属性更新</div>
-      <vue3-seamless-scroll :list="list1">
-        <div class="item" v-for="(item, index) in list1" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-
-    <div class="scroll">
-      <div>数组添加数据</div>
-      <vue3-seamless-scroll :list="list2">
-        <div class="item" v-for="(item, index) in list2" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-
-    <div class="scroll">
-      <div>插槽方式使用</div>
-      <vue3-seamless-scroll :list="list">
-        <div class="item" v-for="(item, index) in list" :key="index" @click="onClick(index)">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-        <template #html>
-          <div class="item" v-for="(item, index) in list" :key="index" @click="onClick(index)">
-            <span>{{ item.title }}</span>
-            <span>{{ item.date }}</span>
-          </div>
-        </template>
-      </vue3-seamless-scroll>
-    </div>
-    <div class="scroll" :style="{height: `${height}px`}">
-      <div>父级div高度改变</div>
-      <vue3-seamless-scroll :list="list" :ease="ease" ref="testRef">
-        <div class="item" v-for="(item, index) in list" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-    <div class="scroll">
-      <div>未达到滚动条件直接显示原有的数据</div>
-      <vue3-seamless-scroll :list="list2" :ease="ease" :limit-scroll-num="7">
-        <div class="item" v-for="(item, index) in list2" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-    <div class="scroll">
-      <div>异步数据触发滚动</div>
-      <vue3-seamless-scroll :list="syacList" :ease="ease">
-        <div class="item" v-for="(item, index) in syacList" :key="index">
-          <span>{{ item.title }}</span>
-          <span>{{ item.date }}</span>
-        </div>
-      </vue3-seamless-scroll>
-    </div>
-    <div>
-      <div style="font-weight: bold; color: red; text-align: center;">单行滚动</div>
-      <div class="singleLine">
-        <vue3-seamless-scroll :list="list" direction="left" :single-line="true">
-          <span v-for="(item, index) in list" :key="index">{{ item.title }}</span>
-        </vue3-seamless-scroll>
+    <el-radio-group v-model="radio" @change="change">
+      <el-radio :value="1" size="large" border>默认配置</el-radio>
+      <el-radio :value="2" size="large" border>鼠标悬停</el-radio>
+      <el-radio :value="3" size="large" border>鼠标悬停鼠标滚动</el-radio>
+      <el-radio :value="4" size="large" border>默认单步一秒</el-radio>
+      <el-radio :value="5" size="large" border>自定义单步停顿时间</el-radio>
+      <el-radio :value="6" size="large" border>自定义速度</el-radio>
+      <el-radio :value="7" size="large" border>增加元素</el-radio>
+      <el-radio :value="8" size="large" border>删除元素</el-radio>
+      <el-radio :value="9" size="large" border>更新元素</el-radio>
+      <el-radio :value="10" size="large" border>盒子大小变化</el-radio>
+      <el-radio :value="11" size="large" border>无限数据</el-radio>
+      <el-radio :value="12" size="large" border>手动控制滚动</el-radio>
+    </el-radio-group>
+    <div v-if="radio === 1">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
       </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" direction="down">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" direction="down">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="left" style="display: flex;">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="right" style="display: flex;">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 2">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" hover>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" direction="down" hover>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" hover>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" hover>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" hover>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" direction="down" hover>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="left" style="display: flex;" hover>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="right" style="display: flex;" hover>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 3">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" hover wheel>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" direction="down" hover wheel>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" hover wheel>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" hover wheel>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" hover wheel>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" direction="down" hover wheel>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="left" style="display: flex;" hover wheel>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="right" style="display: flex;" hover wheel>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 4">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" single-line>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" direction="down" single-line>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" single-line>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" single-line>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" single-line>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" direction="down" single-line>
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="left" style="display: flex;" single-line>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="right" style="display: flex;" single-line>
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 5">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上单步停顿2秒" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" single-line :single-wait-time="2000">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下单步停顿3秒" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" direction="down" single-line :single-wait-time="3000">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左单步停顿3秒">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" single-line :single-wait-time="3000">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右单步停顿5秒">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" single-line :single-wait-time="5000">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上单步停顿3秒" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" single-line :single-wait-time="3000">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下单步停顿5秒" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" direction="down" single-line :single-wait-time="5000">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左单步停顿3秒" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="left" style="display: flex;" single-line
+                :single-wait-time="3000">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右单步停顿2秒" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="right" style="display: flex;" single-line
+                :single-wait-time="2000">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 6">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" :step="0.5">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" direction="down" :step="0.3">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" :step="0.6">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" :step="0.8">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" :step="1">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" direction="down" :step="2">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="left" style="display: flex;" :step="1.5">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="right" style="display: flex;" :step="0.5">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 7">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list1" :ref="el => addRefs[0] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list1" direction="down" :ref="el => addRefs[1] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list1" style="display: flex;" :ref="el => addRefs[2] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list1" style="display: flex;" :ref="el => addRefs[3] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list1" :ref="el => addRefs[4] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list1" direction="down" :ref="el => addRefs[5] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list1" direction="left" style="display: flex;" :ref="el => addRefs[6] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list1" direction="right" style="display: flex;" :ref="el => addRefs[7] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 8">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list1" :ref="el => delRefs[0] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list1" direction="down" :ref="el => delRefs[1] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list1" style="display: flex;" :ref="el => delRefs[2] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list1" style="display: flex;" :ref="el => delRefs[3] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list1" :ref="el => delRefs[4] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list1" direction="down" :ref="el => delRefs[5] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list1" direction="left" style="display: flex;" :ref="el => delRefs[6] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list1" direction="right" style="display: flex;" :ref="el => delRefs[7] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 9">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list1" :ref="el => editRefs[0] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list1" direction="down" :ref="el => editRefs[1] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list1" style="display: flex;" :ref="el => editRefs[2] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list1" style="display: flex;" :ref="el => editRefs[3] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list1" :ref="el => editRefs[4] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list1" direction="down" :ref="el => editRefs[5] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list1" direction="left" style="display: flex;" :ref="el => editRefs[6] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list1" direction="right" style="display: flex;"
+                :ref="el => editRefs[7] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 10">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list1" :ref="el => editSizeRefs[0] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list1" direction="down" :ref="el => editSizeRefs[1] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list1" style="display: flex;" :ref="el => editSizeRefs[2] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list1" style="display: flex;" :ref="el => editSizeRefs[3] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list1" :ref="el => editSizeRefs[4] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list1" direction="down" :ref="el => editSizeRefs[5] = el">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list1" direction="left" style="display: flex;"
+                :ref="el => editSizeRefs[6] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list1" direction="right" style="display: flex;"
+                :ref="el => editSizeRefs[7] = el">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 11">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list2" :step="2" :ref="el => loopDataRefs[0] = el"
+                @offset="(bufferSize, targetList) => offset(0, bufferSize, targetList)">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <div>{{ data.name }}</div>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list2" direction="down" :ref="el => loopDataRefs[1] = el"
+                @offset="(bufferSize, targetList) => offset(1, bufferSize, targetList)">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <div>{{ data.name }}</div>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list2" style="display: flex;" :ref="el => loopDataRefs[2] = el"
+                @offset="(bufferSize, targetList) => offset(2, bufferSize, targetList)">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list2" style="display: flex;" :ref="el => loopDataRefs[3] = el"
+                @offset="(bufferSize, targetList) => offset(3, bufferSize, targetList)">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list2" :ref="el => loopDataRefs[4] = el"
+                @offset="(bufferSize, targetList) => offset(4, bufferSize, targetList)">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <div>{{ data.name }}</div>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list2" direction="down" :ref="el => loopDataRefs[5] = el"
+                @offset="(bufferSize, targetList) => offset(5, bufferSize, targetList)">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <div>{{ data.name }}</div>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list2" direction="left" style="display: flex;"
+                :ref="el => loopDataRefs[6] = el"
+                @offset="(bufferSize, targetList) => offset(6, bufferSize, targetList)">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list2" direction="right" style="display: flex;"
+                :ref="el => loopDataRefs[7] = el"
+                @offset="(bufferSize, targetList) => offset(7, bufferSize, targetList)">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div v-if="radio === 12">
+      <div style="margin-top: 30px;">
+        <h2>单组件使用</h2>
+      </div>
+      开关<input type="checkbox" id="scrollState" checked>
+      <el-row justify="space-evenly" style="margin-top: 30px;">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" v-model="scrollState">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vertical-scroll :list="list" direction="down" v-model="scrollState">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vertical-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" v-model="scrollState">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右">
+            <div class="horizonta-scoll">
+              <horizontal-scroll :list="list" style="display: flex;" v-model="scrollState">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </horizontal-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <div style="margin-top: 30px;">
+        <h2>一个组件使用</h2>
+      </div>
+      <el-row justify="space-evenly">
+        <el-col :span="6">
+          <el-card header="向上" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" v-model="scrollState">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向下" style="text-align: center;">
+            <div class="vertical-scoll">
+              <vue3-seamless-scroll :list="list" direction="down" v-model="scrollState">
+                <template v-slot="{ data }">
+                  <span style="width: 100%; display: block; line-height: 30px;">
+                    <template v-if="data.id % 2 === 0">
+                      <div>{{ data.name }}</div>
+                    </template>
+                    <template v-else>
+                      <div>{{ data.name }}</div>
+                      <div>{{ data.name }}</div>
+                    </template>
+                  </span>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向左" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="left" style="display: flex;" v-model="scrollState">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card header="向右" style="text-align: center;">
+            <div class="horizonta-scoll">
+              <vue3-seamless-scroll :list="list" direction="right" style="display: flex;" v-model="scrollState">
+                <template v-slot="{ data }">
+                  <div class="vertical-text">
+                    {{ data.name }}
+                  </div>
+                </template>
+              </vue3-seamless-scroll>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
     </div>
   </div>
   <script>
-    const listData = [
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第1条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第2条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第3条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第4条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第5条",
-        date: Date.now(),
-      },
-    ];
-    const listData1 = [
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第1条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第2条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第3条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第4条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第5条",
-        date: Date.now(),
-      },
-    ];
-    const listData2 = [
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第1条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第2条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第3条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第4条",
-        date: Date.now(),
-      },
-      {
-        title: "Vue3.0 无缝滚动组件展示数据第5条",
-        date: Date.now(),
-      },
-    ];
+    const listData = Array.from({ length: 10000 }, (_, i) => ({
+      id: Date.now() + i + 1,
+      name: `Vue3.0无缝滚动展示数据第${i + 1}条`,
+    }));
+
     const vue3Composition = {
       name: "example",
       setup() {
+        const scrollState = Vue.ref(true);
         const list = Vue.ref(listData);
-        const list1 = Vue.ref(listData1);
-        const list2 = Vue.ref(listData2);
-        const syacList = Vue.ref();
-        const scroll = Vue.ref(false);
-        const count = Vue.ref(1);
-        const ease = Vue.ref({
-          x1: 0,
-          y1: 0,
-          x2: 1,
-          y2: 1,
-        });
-        const height = Vue.ref(500);
-        let timer1;
+        const list1 = Vue.ref(listData);
+        const addRefs = Vue.ref([null, null, null, null, null, null, null, null]);
+        const delRefs = Vue.ref([null, null, null, null, null, null, null, null]);
+        const editRefs = Vue.ref([null, null, null, null, null, null, null, null]);
+        const editSizeRefs = Vue.ref([null, null, null, null, null, null, null, null]);
+        const loopDataRefs = Vue.ref([null, null, null, null, null, null, null, null]);
 
-        Vue.onMounted(() => {
-          setTimeout(() => {
-            syacList.value = listData
-            height.value = 180;
-          }, 5000);
+        const list2 = Vue.ref(Array.from({ length: 25 }, (_, i) => ({
+          id: Date.now() + i + 1,
+          name: `Vue3.0无缝滚动展示数据第${i + 1}条`,
+        })));
 
-          setInterval(() => {
-            list1.value[1].date =  Date.now();
-            list1.value[3].date = Date.now();
-          }, 2000);
+        let t1 = null;
+        let t2 = null;
+        let t3 = null;
+        let t4 = null;
+        let t5 = null;
 
-          timer1 = setInterval(() => {
-            list2.value.push({
-              title: "Vue3.0 无缝滚动组件展示数据第 "+(list2.value.length+1)+" 条",
-              date: Date.now(),
-            });
-            if (list2.value.length === 9) {
-              clearInterval(timer1)
-            }
-          }, 2000);
-
-          setInterval(() => {
-            scroll.value = !scroll.value;
-          }, 3000);
-        });
-
-        function onCount(num) {
-          console.log(num);
-          if (num === count.value) {
-            setTimeout(() => {
-              count.value = num + 1;
+        const change = (val) => {
+          clearTimeout(t1);
+          clearTimeout(t2);
+          clearTimeout(t3);
+          clearTimeout(t4);
+          clearTimeout(t5);
+          if (val !== 10) {
+            Array.from(document.querySelectorAll('.vertical-scoll'))
+              .forEach((d) => {
+                d.style.height = `300px`;
+              })
+            Array.from(document.querySelectorAll('.horizonta-scoll'))
+              .forEach((d) => {
+                d.style.height = `300px`;
+              })
+          }
+          if (val === 7) {
+            Vue.nextTick(() => {
+              t1 = setTimeout(() => {
+                const data = {
+                  id: Date.now(),
+                  name: `Vue3.0无缝滚动展示新增数据`,
+                };
+                addRefs.value[0].add(5, [data]);
+                addRefs.value[1].add(2, [data]);
+                addRefs.value[2].add(7, [data]);
+                addRefs.value[3].add(9, [data]);
+                addRefs.value[4].add(11, [data]);
+                addRefs.value[5].add(15, [data]);
+                addRefs.value[6].add(19, [data]);
+                addRefs.value[7].add(20, [data]);
+              }, 2000);
+              t2 = setTimeout(() => {
+                const data = {
+                  id: Date.now(),
+                  name: `Vue3.0无缝滚动展示新增多条数据`,
+                };
+                addRefs.value[0].add(1, [data, data, data]);
+                addRefs.value[1].add(3, [data, data, data]);
+                addRefs.value[2].add(5, [data, data, data]);
+                addRefs.value[3].add(8, [data, data, data]);
+                addRefs.value[4].add(6, [data, data, data]);
+                addRefs.value[5].add(12, [data, data, data]);
+                addRefs.value[6].add(18, [data, data, data]);
+                addRefs.value[7].add(20, [data, data, data]);
+              }, 5000);
+            })
+          }
+          if (val === 8) {
+            t3 = setTimeout(() => {
+              delRefs.value[0].remove(3, 2);
+              delRefs.value[1].remove(2, 3);
+              delRefs.value[2].remove(1, 1);
+              delRefs.value[3].remove(5);
+              delRefs.value[4].remove(3);
+              delRefs.value[5].remove(10, 5);
+              delRefs.value[6].remove(11, 2);
+              delRefs.value[7].remove(6, 6);
             }, 2000);
+          }
+          if (val === 9) {
+            const data = {
+              id: Date.now(),
+              name: `Vue3.0无缝滚动展示更新数据`,
+            };
+            t4 = setTimeout(() => {
+              editRefs.value[0].update(3, data);
+              editRefs.value[1].update(2, data);
+              editRefs.value[2].update(1, data);
+              editRefs.value[3].update(5, data);
+              editRefs.value[4].update(10, data);
+              editRefs.value[5].update(6, data);
+              editRefs.value[6].update(11, data);
+              editRefs.value[7].update(8, data);
+            }, 3000);
+          }
+          if (val === 10) {
+            t5 = setTimeout(() => {
+              const random = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
+              Array.from(document.querySelectorAll('.vertical-scoll'))
+                .forEach((d) => {
+                  d.style.height = `${random}px`;
+                })
+              Array.from(document.querySelectorAll('.horizonta-scoll'))
+                .forEach((d) => {
+                  d.style.height = `${random}px`;
+                })
+              editSizeRefs.value[0].reset();
+              editSizeRefs.value[1].reset();
+              editSizeRefs.value[2].reset();
+              editSizeRefs.value[3].reset();
+              editSizeRefs.value[4].reset();
+              editSizeRefs.value[5].reset();
+              editSizeRefs.value[6].reset();
+              editSizeRefs.value[7].reset();
+            }, 3000);
+          }
+          if (val === 12) {
+            Vue.nextTick(() => {
+              const checkbox = document.getElementById('scrollState');
+              checkbox.addEventListener('change', function () {
+                if (checkbox.checked) {
+                  scrollState.value = true;
+                } else {
+                  scrollState.value = false;
+                }
+              });
+            })
           }
         }
 
-        function onClick(index) {
-          alert(index);
+        const offset = (index, bufferSize, targetList) => {
+          const date = Date.now();
+          loopDataRefs.value[index].add(targetList.length, Array.from({ length: bufferSize }, (_, i) => ({
+            id: date + i + 1,
+            name: `无缝滚动模拟分页请求数据 ${date + i}`,
+          })));
+          if (targetList.length >= 100) {
+            loopDataRefs.value[index].remove(0, 50);
+          }
         }
 
+        const radio = Vue.ref(1);
         return {
           list,
           list1,
           list2,
-          syacList,
-          scroll,
-          count,
-          onCount,
-          onClick,
-          ease,
-          height,
-        }
+          radio,
+          addRefs,
+          delRefs,
+          editRefs,
+          editSizeRefs,
+          loopDataRefs,
+          offset,
+          change,
+          scrollState,
+        };
       }
     };
     const app = Vue.createApp(vue3Composition);
     app.component('Vue3SeamlessScroll', Vue3SeamlessScroll.Vue3SeamlessScroll);
+    app.component('HorizontalScroll', Vue3SeamlessScroll.HorizontalScroll);
+    app.component('VerticalScroll', Vue3SeamlessScroll.VerticalScroll);
+    app.component('ElRadio', ElementPlus.ElRadio);
+    app.component('ElRadioGroup', ElementPlus.ElRadioGroup);
+    app.component('ElRow', ElementPlus.ElRow);
+    app.component('ElCol', ElementPlus.ElCol);
+    app.component('ElCard', ElementPlus.ElCard);
     app.mount("#app");
   </script>
 </body>
