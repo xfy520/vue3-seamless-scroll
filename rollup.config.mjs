@@ -1,15 +1,13 @@
 import path from 'path'
-import resolve from 'rollup-plugin-node-resolve'
-import commonjs from 'rollup-plugin-commonjs'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
 import pluginVue from 'rollup-plugin-vue'
 import postcss from 'rollup-plugin-postcss'
-import { terser } from 'rollup-plugin-terser'
-import { uglify } from 'rollup-plugin-uglify'
-import clear from 'rollup-plugin-clear'
-import vueJsx from '@vitejs/plugin-vue-jsx'
+import terser from '@rollup/plugin-terser'
+import strip from '@rollup/plugin-strip'
 
 module.exports = {
-  input: path.resolve(__dirname, './package/index.js'),
+  input: path.resolve(__dirname, './packages/index.js'),
   output: [
     {
       file: path.resolve(__dirname, './dist/vue3-seamless-scroll.js'),
@@ -27,7 +25,6 @@ module.exports = {
         vue: 'Vue'
       },
       plugins: [
-        uglify(),
         terser()
       ]
     },
@@ -39,16 +36,19 @@ module.exports = {
       }
     }
   ],
+  onwarn: (warning, warn) => {
+    if (warning.code === 'MIXED_EXPORTS') return;
+    warn(warning);
+  },
   plugins: [
+    strip({
+      include: ['**/*.js'],
+      functions: ['console.log', 'assert'],
+    }),
     resolve(),
-    vueJsx(),
     pluginVue(),
     commonjs(),
     postcss(),
-    clear({
-      targets: ['./dist'],
-      watch: true,
-    })
   ],
   external: [
     'vue'

@@ -1,9 +1,8 @@
-import { UserConfigExport, defineConfig } from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import vueJsx from '@vitejs/plugin-vue-jsx';
 
-export default (): UserConfigExport => defineConfig({
-  plugins: [vue(), vueJsx()],
+export default () => defineConfig({
+  plugins: [vue()],
   build: {
     target: 'es2015',
     outDir: 'dist',
@@ -20,8 +19,11 @@ export default (): UserConfigExport => defineConfig({
   },
   server: {
     open: false,
+    port: 3000,
     host: '0.0.0.0',
     https: false,
-    hmr: true,
+    hmr: {
+      overlay: false
+    }
   },
 })
