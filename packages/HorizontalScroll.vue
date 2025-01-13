@@ -189,7 +189,7 @@ export default defineComponent({
             offset.value -= step;
           }
           if (tempOffset > bufferTotalWidth) {
-            emit('offset');
+            emit('offset', bufferSize, targetList);
             updateCursorIndex();
             nextTick(() => {
               offset.value = direction.value === 'left' ? 0 : getFullWidth() - realBoxWidth;
@@ -440,25 +440,7 @@ export default defineComponent({
               if (tempBufferSize !== bufferSize) {
                 bufferSize = tempBufferSize;
               }
-              const findIndexs = [];
-              visibleItems.value.forEach((v, i) => {
-                if (v.index === index) {
-                  findIndexs.push(i);
-                }
-              });
-              if (findIndexs.length > 0) {
-                if (funArgs.value[0] === 'splice') {
-                  updateCursorIndex();
-                  nextTick(() => {
-                    initWidth();
-                  });
-                } else {
-                  funArgs.value = initCursorIndex();
-                  nextTick(() => {
-                    initWidth();
-                  });
-                }
-              }
+              funArgs.value = initCursorIndex();
             } else {
               init();
             }

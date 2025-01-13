@@ -10,6 +10,7 @@
     <el-radio :value="8" size="large" border>删除元素</el-radio>
     <el-radio :value="9" size="large" border>更新元素</el-radio>
     <el-radio :value="10" size="large" border>盒子大小变化</el-radio>
+    <el-radio :value="11" size="large" border>无限数据</el-radio>
   </el-radio-group>
   <div v-if="radio === 1">
     <div style="margin-top: 30px;">
@@ -1415,6 +1416,130 @@
       </el-col>
     </el-row>
   </div>
+  <div v-if="radio === 11">
+    <div style="margin-top: 30px;">
+      <h2>单组件使用</h2>
+    </div>
+    <el-row justify="space-evenly" style="margin-top: 30px;">
+      <el-col :span="6">
+        <el-card header="向上" style="text-align: center;">
+          <div class="vertical-scoll">
+            <VerticalScroll :list="list2" :step="2" :ref="el => loopDataRefs[0] = el"
+              @offset="(bufferSize, targetList) => offset(0, bufferSize, targetList)">
+              <template v-slot="{ data }">
+                <span style="width: 100%; display: block; line-height: 30px;">
+                  <div>{{ data.name }}</div>
+                </span>
+              </template>
+            </VerticalScroll>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card header="向下" style="text-align: center;">
+          <div class="vertical-scoll">
+            <VerticalScroll :list="list2" direction="down" :ref="el => loopDataRefs[1] = el"
+              @offset="(bufferSize, targetList) => offset(1, bufferSize, targetList)">
+              <template v-slot="{ data }">
+                <span style="width: 100%; display: block; line-height: 30px;">
+                  <div>{{ data.name }}</div>
+                </span>
+              </template>
+            </VerticalScroll>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card header="向左">
+          <div class="horizonta-scoll">
+            <HorizontalScroll :list="list2" style="display: flex;" :ref="el => loopDataRefs[2] = el"
+              @offset="(bufferSize, targetList) => offset(2, bufferSize, targetList)">
+              <template v-slot="{ data }">
+                <div class="vertical-text">
+                  {{ data.name }}
+                </div>
+              </template>
+            </HorizontalScroll>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card header="向右">
+          <div class="horizonta-scoll">
+            <HorizontalScroll :list="list2" style="display: flex;" :ref="el => loopDataRefs[3] = el"
+              @offset="(bufferSize, targetList) => offset(3, bufferSize, targetList)">
+              <template v-slot="{ data }">
+                <div class="vertical-text">
+                  {{ data.name }}
+                </div>
+              </template>
+            </HorizontalScroll>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+    <div style="margin-top: 30px;">
+      <h2>一个组件使用</h2>
+    </div>
+    <el-row justify="space-evenly">
+      <el-col :span="6">
+        <el-card header="向上" style="text-align: center;">
+          <div class="vertical-scoll">
+            <vue3-seamless-scroll :list="list2" :ref="el => loopDataRefs[4] = el"
+              @offset="(bufferSize, targetList) => offset(4, bufferSize, targetList)">
+              <template v-slot="{ data }">
+                <span style="width: 100%; display: block; line-height: 30px;">
+                  <div>{{ data.name }}</div>
+                </span>
+              </template>
+            </vue3-seamless-scroll>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card header="向下" style="text-align: center;">
+          <div class="vertical-scoll">
+            <vue3-seamless-scroll :list="list2" direction="down" :ref="el => loopDataRefs[5] = el"
+              @offset="(bufferSize, targetList) => offset(5, bufferSize, targetList)">
+              <template v-slot="{ data }">
+                <span style="width: 100%; display: block; line-height: 30px;">
+                  <div>{{ data.name }}</div>
+                </span>
+              </template>
+            </vue3-seamless-scroll>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card header="向左" style="text-align: center;">
+          <div class="horizonta-scoll">
+            <vue3-seamless-scroll :list="list2" direction="left" style="display: flex;"
+              :ref="el => loopDataRefs[6] = el" @offset="(bufferSize, targetList) => offset(6, bufferSize, targetList)">
+              <template v-slot="{ data }">
+                <div class="vertical-text">
+                  {{ data.name }}
+                </div>
+              </template>
+            </vue3-seamless-scroll>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card header="向右" style="text-align: center;">
+          <div class="horizonta-scoll">
+            <vue3-seamless-scroll :list="list2" direction="right" style="display: flex;"
+              :ref="el => loopDataRefs[7] = el" @offset="(bufferSize, targetList) => offset(7, bufferSize, targetList)">
+              <template v-slot="{ data }">
+                <div class="vertical-text">
+                  {{ data.name }}
+                </div>
+              </template>
+            </vue3-seamless-scroll>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 <script lang="ts">
 const listData = Array.from({ length: 10000 }, (_, i) => ({
@@ -1422,7 +1547,7 @@ const listData = Array.from({ length: 10000 }, (_, i) => ({
   name: `Vue3.0无缝滚动展示数据第${i + 1}条`,
 }));
 
-import { defineComponent, nextTick, onMounted, ref } from 'vue';
+import { defineComponent, nextTick, ref } from 'vue';
 import { VerticalScroll, HorizontalScroll } from '../packages/index';
 
 export default defineComponent({
@@ -1438,8 +1563,25 @@ export default defineComponent({
     const delRefs = ref([null, null, null, null, null, null, null, null]);
     const editRefs = ref([null, null, null, null, null, null, null, null]);
     const editSizeRefs = ref([null, null, null, null, null, null, null, null]);
+    const loopDataRefs = ref([null, null, null, null, null, null, null, null]);
+
+    const list2 = ref(Array.from({ length: 25 }, (_, i) => ({
+      id: Date.now() + i + 1,
+      name: `Vue3.0无缝滚动展示数据第${i + 1}条`,
+    })));
+
+    let t1 = null;
+    let t2 = null;
+    let t3 = null;
+    let t4 = null;
+    let t5 = null;
 
     const change = (val) => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+      clearTimeout(t5);
       if (val !== 10) {
         Array.from(document.querySelectorAll('.vertical-scoll'))
           .forEach((d) => {
@@ -1452,7 +1594,7 @@ export default defineComponent({
       }
       if (val === 7) {
         nextTick(() => {
-          setTimeout(() => {
+          t1 = setTimeout(() => {
             const data = {
               id: Date.now(),
               name: `Vue3.0无缝滚动展示新增数据`,
@@ -1466,7 +1608,7 @@ export default defineComponent({
             addRefs.value[6].add(19, [data]);
             addRefs.value[7].add(20, [data]);
           }, 2000);
-          setTimeout(() => {
+          t2 = setTimeout(() => {
             const data = {
               id: Date.now(),
               name: `Vue3.0无缝滚动展示新增多条数据`,
@@ -1483,7 +1625,7 @@ export default defineComponent({
         })
       }
       if (val === 8) {
-        setTimeout(() => {
+        t3 = setTimeout(() => {
           delRefs.value[0].remove(3, 2);
           delRefs.value[1].remove(2, 3);
           delRefs.value[2].remove(1, 1);
@@ -1499,7 +1641,7 @@ export default defineComponent({
           id: Date.now(),
           name: `Vue3.0无缝滚动展示更新数据`,
         };
-        setTimeout(() => {
+        t4 = setTimeout(() => {
           editRefs.value[0].update(3, data);
           editRefs.value[1].update(2, data);
           editRefs.value[2].update(1, data);
@@ -1511,7 +1653,7 @@ export default defineComponent({
         }, 3000);
       }
       if (val === 10) {
-        setTimeout(() => {
+        t5 = setTimeout(() => {
           const random = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
           Array.from(document.querySelectorAll('.vertical-scoll'))
             .forEach((d) => {
@@ -1532,15 +1674,29 @@ export default defineComponent({
         }, 3000);
       }
     }
+
+    const offset = (index, bufferSize, targetList) => {
+      const date = Date.now();
+      loopDataRefs.value[index].add(targetList.length, Array.from({ length: bufferSize }, (_, i) => ({
+        id: date + i + 1,
+        name: `无缝滚动模拟分页请求数据 ${date + i}`,
+      })));
+      if (targetList.length >= 100) {
+        loopDataRefs.value[index].remove(0, 50);
+      }
+    }
     const radio = ref(1);
     return {
       list,
       list1,
+      list2,
       radio,
       addRefs,
       delRefs,
       editRefs,
       editSizeRefs,
+      loopDataRefs,
+      offset,
       change
     };
   },

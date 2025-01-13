@@ -7,7 +7,7 @@ import terser from '@rollup/plugin-terser'
 import strip from '@rollup/plugin-strip'
 
 module.exports = {
-  input: path.resolve(__dirname, './package/index.js'),
+  input: path.resolve(__dirname, './packages/index.js'),
   output: [
     {
       file: path.resolve(__dirname, './dist/vue3-seamless-scroll.js'),

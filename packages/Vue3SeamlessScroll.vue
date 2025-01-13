@@ -493,25 +493,7 @@ export default defineComponent({
               if (tempBufferSize !== bufferSize) {
                 bufferSize = tempBufferSize;
               }
-              const findIndexs = [];
-              visibleItems.value.forEach((v, i) => {
-                if (v.index === index) {
-                  findIndexs.push(i);
-                }
-              });
-              if (findIndexs.length > 0) {
-                if (funArgs.value[0] === 'splice') {
-                  updateCursorIndex();
-                  nextTick(() => {
-                    initWH();
-                  });
-                } else {
-                  funArgs.value = initCursorIndex();
-                  nextTick(() => {
-                    initWH();
-                  });
-                }
-              }
+              funArgs.value = initCursorIndex();
             } else {
               init();
             }

@@ -2,7 +2,7 @@
   <div class="vue3-seamless-vertical-wrapper" ref="realWrapperRef"
     :style="{ transition: `transform ${ease}`, transform: `translateY(-${offset}px)` }">
     <template v-for="item in visibleItems" :key="item.id">
-      <slot :data="item.data" :index="item.index"> </slot>
+      <slot :data="item.data" :index="item.index"></slot>
     </template>
   </div>
   <div style="position: absolute !important; top: -999999px !important;" ref="realWrapperHiddenRef">
@@ -187,7 +187,7 @@ export default defineComponent({
             offset.value -= step;
           }
           if (tempOffset > bufferTotalHeight) {
-            emit('offset');
+            emit('offset', bufferSize, targetList);
             updateCursorIndex();
             nextTick(() => {
               offset.value = direction.value === 'up' ? 0 : getFullHeight() - realBoxHeight;
@@ -336,7 +336,7 @@ export default defineComponent({
     const getBufferSize = () => {
       let tempBufferSize = targetList.length - visibleCount.value;
       tempBufferSize = Math.max(1, tempBufferSize);
-      tempBufferSize = Math.min(10, tempBufferSize);
+      tempBufferSize = Math.min(5, tempBufferSize);
       return tempBufferSize;
     }
 
@@ -436,29 +436,10 @@ export default defineComponent({
             const hasVerticalScroll = realWrapperHiddenRef.value.offsetHeight > realBoxHeight;
             if (hasVerticalScroll) {
               const tempBufferSize = getBufferSize();
-
               if (tempBufferSize !== bufferSize) {
                 bufferSize = tempBufferSize;
               }
-              const findIndexs = [];
-              visibleItems.value.forEach((v, i) => {
-                if (v.index === index) {
-                  findIndexs.push(i);
-                }
-              });
-              if (findIndexs.length > 0) {
-                if (funArgs.value[0] === 'splice') {
-                  updateCursorIndex();
-                  nextTick(() => {
-                    initHeight();
-                  });
-                } else {
-                  funArgs.value = initCursorIndex();
-                  nextTick(() => {
-                    initHeight();
-                  });
-                }
-              }
+              funArgs.value = initCursorIndex();
             } else {
               init();
             }
