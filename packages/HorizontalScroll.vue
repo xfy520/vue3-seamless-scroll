@@ -23,7 +23,7 @@ import { throttle, listMap, duplicateId, uuid } from './util';
 
 export default defineComponent({
   name: 'HorizontalScroll',
-  emits: ['offset'],
+  emits: ['offset', 'count'],
   inheritAttrs: false,
   props: {
     // 是否开启自动滚动
@@ -101,6 +101,12 @@ export default defineComponent({
 
     const targetList = listMap(props.list);
 
+    let total = 0;
+
+    let count = 0;
+
+    let totalCount = 0;
+
     let childrenWidthList = [];
 
     let bufferTotalWidth = 0;
@@ -165,10 +171,25 @@ export default defineComponent({
       }
 
       const scrollFun = () => {
-        if (props.singleLine && singleOffset >= childrenWidthList[0]) {
-          singleState = true;
+        const singleWidth = childrenWidthList[0];
+        let singleDone = false;
+        if (singleOffset >= singleWidth) {
+          singleDone = true;
+        }
+
+        if (singleDone) {
           childrenWidthList.shift();
           singleOffset = 0;
+          count += 1;
+        }
+        if (count === total) {
+          totalCount += 1;
+          emit('count', totalCount);
+          count = 0;
+        }
+
+        if (props.singleLine && singleDone) {
+          singleState = true;
           setTimeout(() => {
             singleState = false;
             if (!isWheel) {
@@ -321,10 +342,12 @@ export default defineComponent({
           })
         }
       }
-
+      total = targetList.length;
     });
 
     const init = () => {
+      count = 0;
+      totalCount = 0;
       listCanScroll = false;
       bufferSize = 0;
       funArgs.value = [];
@@ -427,6 +450,7 @@ export default defineComponent({
       if (!!cb && typeof cb === 'function') {
         cb(targetList);
       }
+      total = targetList.length;
     }
 
     const remove = (index, num = 1, cb) => {
@@ -455,6 +479,7 @@ export default defineComponent({
       if (!!cb && typeof cb === 'function') {
         cb(targetList);
       }
+      total = targetList.length;
     }
 
 
