@@ -9,8 +9,17 @@ function throttle(delay, func) {
   };
 }
 
+function generateUUID() {
+  const template = 'xxxxxxxxxxxxaxxxyxxxxxxxxxxxxxxx';
+  return template.replace(/[xy]/g, function (char) {
+    const random = Math.random() * 16 | 0;
+    const value = char === 'x' ? random : (random & 0x3) | 0x8;
+    return value.toString(16);
+  });
+}
+
 const uuid = () => {
-  return crypto.randomUUID().replaceAll('-', '');
+  return generateUUID().replaceAll('-', '');
 }
 
 function duplicateId(list) {
