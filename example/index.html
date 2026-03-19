@@ -85,7 +85,6 @@
         </div>
       </vue3-seamless-scroll>
     </div>
-
     <div class="scroll">
       <div>向左滚动</div>
       <vue3-seamless-scroll :list="list" direction="left">
@@ -95,7 +94,6 @@
         </div>
       </vue3-seamless-scroll>
     </div>
-
     <div class="scroll">
       <div>滚动速度</div>
       <vue3-seamless-scroll :list="list" :step="3">
@@ -105,7 +103,6 @@
         </div>
       </vue3-seamless-scroll>
     </div>
-
     <div class="scroll">
       <div>鼠标悬停</div>
       <vue3-seamless-scroll :list="list" hover>
@@ -115,7 +112,6 @@
         </div>
       </vue3-seamless-scroll>
     </div>
-
     <div class="scroll">
       <div>单步停顿</div>
       <vue3-seamless-scroll :list="list" :single-height="30">
@@ -125,7 +121,6 @@
         </div>
       </vue3-seamless-scroll>
     </div>
-
     <div class="scroll">
       <div>单行停顿时间</div>
       <vue3-seamless-scroll :list="list" :single-height="30" :single-waitTime="3000">
@@ -135,7 +130,6 @@
         </div>
       </vue3-seamless-scroll>
     </div>
-
     <div class="scroll">
       <div>控制滚动，滚动{{count}}次</div>
       <vue3-seamless-scroll :list="list" :count="count" @count="onCount">
@@ -145,7 +139,6 @@
         </div>
       </vue3-seamless-scroll>
     </div>
-
     <div class="scroll">
       <div>数组属性更新</div>
       <vue3-seamless-scroll :list="list1">
@@ -155,7 +148,6 @@
         </div>
       </vue3-seamless-scroll>
     </div>
-
     <div class="scroll">
       <div>数组添加数据</div>
       <vue3-seamless-scroll :list="list2">
@@ -165,7 +157,6 @@
         </div>
       </vue3-seamless-scroll>
     </div>
-
     <div class="scroll">
       <div>插槽方式使用</div>
       <vue3-seamless-scroll :list="list">
@@ -336,11 +327,9 @@
             }, 2000);
           }
         }
-
         function onClick(index) {
           alert(index);
         }
-
         return {
           list,
           list1,
@@ -360,5 +349,4 @@
     app.mount("#app");
   </script>
 </body>
-
 </html>
