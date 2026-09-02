@@ -280,11 +280,11 @@ const list = ref([
 | `direction`      | `String`  | `"up"`                              | No       | Scrolling direction. Available values: `up`, `down`, `left`, `right`.                                                                         |
 | `hover`          | `Boolean` | `false`                             | No       | Enables pause / interaction behavior when the mouse hovers over the component.                                                                |
 | `step`           | `Number`  | `0.5`                               | No       | Scrolling step / speed.                                                                                                                       |
-| `singleWaitTime` | `Number`  | `1000`                              | No       | Waiting time in milliseconds for single-step scrolling. Only takes effect when `singleLine` is enabled.                                                                                       |
+| `singleWaitTime` | `Number`  | `1000`                              | No       | Waiting time in milliseconds for single-step scrolling. Only takes effect when `singleLine` is enabled.                                       |
 | `delay`          | `Number`  | `0`                                 | No       | Delay before the animation starts.                                                                                                            |
 | `ease`           | `String`  | `cubic-bezier(0.03, 0.76, 1, 0.16)` | No       | Animation easing function. Custom cubic-bezier values are supported.                                                                          |
 | `wheel`          | `Boolean` | `false`                             | No       | Enables mouse-wheel scrolling when hover behavior is enabled.                                                                                 |
-| `singleLine`     | `Boolean` | `false`                             | No       | Enables single-step scrolling: pauses for `singleWaitTime` ms after each item.                                                                                                     |
+| `singleLine`     | `Boolean` | `false`                             | No       | Enables single-step scrolling: pauses for `singleWaitTime` ms after each item.                                                                |
 
 ## Directions
 
