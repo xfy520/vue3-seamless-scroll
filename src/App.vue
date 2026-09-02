@@ -1544,6 +1544,7 @@
   <div v-if="radio === 12">
     <div style="margin-top: 30px; display: flex; align-items: center; gap: 12px;">
       <h2>表格滚动（表头固定 + 表体无缝滚动）</h2>
+      <el-switch v-model="tableSingleLine" active-text="单步滚动（滚一条停一停）" />
       <el-button size="small" @click="refreshTableList">模拟数据整体刷新</el-button>
     </div>
     <div class="board-table-wrap">
@@ -1568,7 +1569,8 @@
         </thead>
       </table>
       <div class="table-scroll-box">
-        <vue3-seamless-scroll :key="tableScrollKey" :list="tableList" direction="up" :step="1" hover>
+        <vue3-seamless-scroll :key="tableScrollKey" :list="tableList" direction="up" :step="1" hover
+          :single-line="tableSingleLine" :single-wait-time="1000">
           <template v-slot="{ data, index }">
             <table class="board-table">
               <colgroup>
@@ -1634,6 +1636,8 @@ export default defineComponent({
     }));
     const tableList = ref(genTableList());
     const tableScrollKey = ref(0);
+    // singleWaitTime 需搭配 singleLine 才生效：开启后每滚动一条数据停顿 singleWaitTime 毫秒
+    const tableSingleLine = ref(false);
     // v5 的 list 是一次性快照：整体刷新数据后需通过 :key 重建组件重新读取
     const refreshTableList = () => {
       tableList.value = genTableList();
@@ -1770,6 +1774,7 @@ export default defineComponent({
       loopDataRefs,
       tableList,
       tableScrollKey,
+      tableSingleLine,
       refreshTableList,
       tableRowClassName,
       offset,
