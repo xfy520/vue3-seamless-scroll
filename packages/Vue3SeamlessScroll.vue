@@ -260,7 +260,15 @@ export default defineComponent({
       if (funArgs.value.length === 0) {
         tempList = targetList.slice(0, visibleCount.value);
       } else if (funArgs.value[0] === 'splice') {
-        tempList = (direction.value === 'up' || direction.value === 'left') ? visibleItems.value : visibleItems.value.reverse();
+        // Create a copy of the current visible items to avoid recursive reference
+        tempList = [];
+        // Safely get current visible items based on cursorIndex
+        let currentVisible = [];
+        if (cursorIndex < targetList.length) {
+          const endIndex = Math.min(cursorIndex + visibleCount.value, targetList.length);
+          currentVisible = targetList.slice(cursorIndex, endIndex);
+        }
+        tempList = (direction.value === 'up' || direction.value === 'left') ? [...currentVisible] : [...currentVisible].reverse();
         tempList.splice(...funArgs.value[1]);
         funArgs.value.slice(2).forEach(args => {
           tempList.push(...targetList.slice(...args));
