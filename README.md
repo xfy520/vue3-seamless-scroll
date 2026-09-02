@@ -358,6 +358,12 @@ Mouse-wheel interaction can be enabled together with hover behavior:
 />
 ```
 
+Notes:
+
+* `wheel` only takes effect when `hover` is also enabled — both props must be `true`.
+* Each wheel event scrolls a fixed 10px step in the configured scroll direction (throttled to 30ms). Wheel direction (up / down) does not reverse the scrolling.
+* While hovering, the page's default wheel scrolling is blocked.
+
 ## Component Methods
 
 The component exposes several methods for manipulating its internal scrolling data.
