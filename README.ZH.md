@@ -88,7 +88,7 @@
 
 - `singleWaitTime`
 
-  > 单步停止等待时间(默认值 1000ms)
+  > 单步停止等待时间(默认值 1000ms)，需开启 `singleLine` 后生效
 
   ```json
   type: Number,
@@ -128,7 +128,7 @@
 
 - `singleLine`
 
-  > 启用单行横向滚动
+  > 开启单步滚动：每滚动完一条数据后停顿 `singleWaitTime` 毫秒再继续
 
   ```json
   type: boolean,
