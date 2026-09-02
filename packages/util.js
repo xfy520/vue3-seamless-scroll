@@ -15,22 +15,19 @@ const uuid = () => {
 
 function duplicateId(list) {
   const seen = new Set();
-  const duplicates = new Set();
 
-  list.forEach(item => {
+  // 同一数据在渲染窗口内出现多次时（短列表无缝滚动，窗口长度大于列表长度），
+  // 为除第一次出现外的每次出现生成独立 id，保证 v-for 的 key 唯一
+  return list.map((item) => {
     if (seen.has(item.id)) {
-      duplicates.add(item);
-    } else {
-      seen.add(item.id);
+      return {
+        ...item,
+        id: uuid()
+      };
     }
+    seen.add(item.id);
+    return item;
   });
-  if (duplicates.size > 0) {
-    list.forEach(item => {
-      item.id = uuid();
-    });
-  }
-
-  return list;
 }
 
 /**
