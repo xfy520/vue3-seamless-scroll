@@ -11,6 +11,7 @@
     <el-radio :value="9" size="large" border>更新元素</el-radio>
     <el-radio :value="10" size="large" border>盒子大小变化</el-radio>
     <el-radio :value="11" size="large" border>无限数据</el-radio>
+    <el-radio :value="12" size="large" border>表格滚动</el-radio>
   </el-radio-group>
   <div v-if="radio === 1">
     <div style="margin-top: 30px;">
@@ -1540,6 +1541,60 @@
       </el-col>
     </el-row>
   </div>
+  <div v-if="radio === 12">
+    <div style="margin-top: 30px; display: flex; align-items: center; gap: 12px;">
+      <h2>表格滚动（表头固定 + 表体无缝滚动）</h2>
+      <el-switch v-model="tableSingleLine" active-text="单步滚动（滚一条停一停）" />
+      <el-button size="small" @click="refreshTableList">模拟数据整体刷新</el-button>
+    </div>
+    <div class="board-table-wrap">
+      <table class="board-table">
+        <colgroup>
+          <col style="width: 30%">
+          <col style="width: 14%">
+          <col style="width: 14%">
+          <col style="width: 14%">
+          <col style="width: 14%">
+          <col style="width: 14%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>任务名称</th>
+            <th>任务数</th>
+            <th>计划数</th>
+            <th>已完成</th>
+            <th>未完成</th>
+            <th>延期数</th>
+          </tr>
+        </thead>
+      </table>
+      <div class="table-scroll-box">
+        <vue3-seamless-scroll :key="tableScrollKey" :list="tableList" direction="up" :step="1" hover
+          :single-line="tableSingleLine" :single-wait-time="1000">
+          <template v-slot="{ data, index }">
+            <table class="board-table">
+              <colgroup>
+                <col style="width: 30%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+              </colgroup>
+              <tr :class="tableRowClassName({ rowIndex: index + 1 })">
+                <td>{{ data.taskName }}</td>
+                <td>{{ data.taskNum }}</td>
+                <td>{{ data.taskPlanNum }}</td>
+                <td>{{ data.finished }}</td>
+                <td>{{ data.unfinished }}</td>
+                <td>{{ data.delayNum }}</td>
+              </tr>
+            </table>
+          </template>
+        </vue3-seamless-scroll>
+      </div>
+    </div>
+  </div>
 </template>
 <script lang="ts">
 const listData = Array.from({ length: 10000 }, (_, i) => ({
@@ -1569,6 +1624,27 @@ export default defineComponent({
       id: Date.now() + i + 1,
       name: `Vue3.0无缝滚动展示数据第${i + 1}条`,
     })));
+
+    const taskNames = ['数据接入', '报表生成', '质量校验', '告警巡检', '日志归档', '资源调度', '版本发布', '模型训练'];
+    const genTableList = () => Array.from({ length: 10 }, (_, i) => ({
+      taskName: `${taskNames[i % taskNames.length]}-${i + 1}`,
+      taskNum: Math.floor(Math.random() * 40) + 10,
+      taskPlanNum: Math.floor(Math.random() * 30) + 5,
+      finished: Math.floor(Math.random() * 20),
+      unfinished: Math.floor(Math.random() * 10),
+      delayNum: Math.floor(Math.random() * 5),
+    }));
+    const tableList = ref(genTableList());
+    const tableScrollKey = ref(0);
+    // singleWaitTime 需搭配 singleLine 才生效：开启后每滚动一条数据停顿 singleWaitTime 毫秒
+    const tableSingleLine = ref(false);
+    // v5 的 list 是一次性快照：整体刷新数据后需通过 :key 重建组件重新读取
+    const refreshTableList = () => {
+      tableList.value = genTableList();
+      tableScrollKey.value += 1;
+    };
+    // 插槽的 index 是数据在原始列表中的位置，滚动过程中保持稳定
+    const tableRowClassName = ({ rowIndex }) => (rowIndex % 2 === 0 ? 'board-row-striped' : '');
 
     let t1 = null;
     let t2 = null;
@@ -1696,6 +1772,11 @@ export default defineComponent({
       editRefs,
       editSizeRefs,
       loopDataRefs,
+      tableList,
+      tableScrollKey,
+      tableSingleLine,
+      refreshTableList,
+      tableRowClassName,
       offset,
       change
     };
@@ -1720,5 +1801,43 @@ export default defineComponent({
   text-orientation: upright;
   line-height: 30px;
   display: inline-block;
+}
+
+.board-table-wrap {
+  margin: 30px auto 0;
+  width: 70%;
+}
+
+.board-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.board-table th,
+.board-table td {
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  border-bottom: 1px solid #ebeef5;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.board-table th {
+  background: #f5f7fa;
+  color: #606266;
+  font-weight: 600;
+}
+
+.board-row-striped td {
+  background: #fafafa;
+}
+
+.table-scroll-box {
+  height: 150px;
+  overflow: hidden;
 }
 </style>

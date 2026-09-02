@@ -347,7 +347,7 @@ export default defineComponent({
       if (!!realWrapperRef.value) {
         realWrapperRef.value.parentElement.addEventListener('mouseenter', onMouseenter);
         realWrapperRef.value.parentElement.addEventListener('mouseleave', onMouseleave);
-        realWrapperRef.value.parentElement.addEventListener('wheel', onWheel);
+        realWrapperRef.value.parentElement.addEventListener('wheel', onWheel, { passive: false });
 
         realBoxWH = realWrapperRef.value.parentElement.offsetHeight;
         if (direction.value === 'left' || direction.value === 'right') {
