@@ -41,12 +41,12 @@ module.exports = {
     warn(warning);
   },
   plugins: [
-    strip({
-      include: ['**/*.js'],
-      functions: ['console.log', 'assert'],
-    }),
     resolve(),
     pluginVue(),
+    strip({
+      include: ['**/*.js', '**/*.vue'],
+      functions: ['console.log', 'assert'],
+    }),
     commonjs(),
     postcss(),
   ],

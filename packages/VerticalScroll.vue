@@ -106,6 +106,9 @@ export default defineComponent({
 
     let cursorIndex = -1;
 
+    // 滚动完一个周期的次数
+    let count = 0;
+
     let realBoxHeight = 0;
 
     let reqFrame = null;
@@ -137,10 +140,13 @@ export default defineComponent({
         } else {
           cursorIndex = tempIndex;
         }
+        // 光标回到列表头部，一个滚动周期结束
+        return true;
       } else {
         const tempFuns = ['splice', [0, bufferSize], [cursorIndex, totalIndex]];
         funArgs.value = tempFuns;
         cursorIndex = totalIndex;
+        return false;
       }
     }
 
@@ -188,7 +194,10 @@ export default defineComponent({
           }
           if (tempOffset > bufferTotalHeight) {
             emit('offset', bufferSize, targetList);
-            updateCursorIndex();
+            if (updateCursorIndex()) {
+              count += 1;
+              emit('count', count);
+            }
             nextTick(() => {
               offset.value = direction.value === 'up' ? 0 : getFullHeight() - realBoxHeight;
               tempOffset = 0;
@@ -246,7 +255,6 @@ export default defineComponent({
       if (!(direction.value === 'up')) {
         tempList.reverse();
       }
-      console.log('VerticalScroll---', 'bufferSize', bufferSize, 'visibleCount', visibleCount.value, 'funArgs', JSON.stringify(funArgs.value), 'tempList', tempList);
       return duplicateId(tempList);
     });
 

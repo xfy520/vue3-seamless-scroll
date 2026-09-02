@@ -65,7 +65,7 @@ export default defineComponent({
     },
     // up，down，left，right
     direction: {
-      type: Boolean,
+      type: String,
       default: 'up',
     },
     delay: {
@@ -111,6 +111,9 @@ export default defineComponent({
 
     let cursorIndex = -1;
 
+    // 滚动完一个周期的次数
+    let count = 0;
+
     let realBoxWH = 0;
 
     let reqFrame = null;
@@ -149,10 +152,13 @@ export default defineComponent({
         } else {
           cursorIndex = tempIndex;
         }
+        // 光标回到列表头部，一个滚动周期结束
+        return true;
       } else {
         const tempFuns = ['splice', [0, bufferSize], [cursorIndex, totalIndex]];
         funArgs.value = tempFuns;
         cursorIndex = totalIndex;
+        return false;
       }
     }
 
@@ -215,7 +221,10 @@ export default defineComponent({
           }
           if (tempOffset > bufferTotalWH) {
             emit('offset', bufferSize, targetList);
-            updateCursorIndex();
+            if (updateCursorIndex()) {
+              count += 1;
+              emit('count', count);
+            }
             nextTick(() => {
               updateOffset();
               tempOffset = 0;
@@ -281,7 +290,6 @@ export default defineComponent({
       if (!((direction.value === 'up' || direction.value === 'left'))) {
         tempList.reverse();
       }
-      console.log('Vue3SeamlessScroll---', 'bufferSize', bufferSize, 'visibleCount', visibleCount.value, 'funArgs', JSON.stringify(funArgs.value), 'tempList', tempList);
       return duplicateId(tempList);
     });
 
@@ -432,7 +440,7 @@ export default defineComponent({
 
           if (values.length === 1 && findIndexs.length > 0) {
             findIndexs.forEach((i) => {
-              visibleItems[i] = datas[0];
+              visibleItems.value[i] = datas[0];
             })
           }
           if (tempBufferSize !== bufferSize) {
@@ -561,7 +569,7 @@ export default defineComponent({
         targetList[index] = data;
         if (findIndexs.length > 0) {
           findIndexs.forEach((i) => {
-            visibleItems[i] = data;
+            visibleItems.value[i] = data;
           })
         }
       }

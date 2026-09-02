@@ -21,7 +21,7 @@
     ".gitignore",
     "LICENSE",
     "index.d.ts",
-    "package",
+    "packages",
     "example",
     "dist/vue3-seamless-scroll.es.js",
     "dist/vue3-seamless-scroll.js",
@@ -50,9 +50,7 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-vue": "^6.0.0",
     "vite": "5.1.8",
-    "vue": "3.3.0"
-  },
-  "dependencies": {
-    "element-plus": "^2.9.3"
+    "vue": "3.3.0",
+    "element-plus": "2.9.3"
   }
 }
