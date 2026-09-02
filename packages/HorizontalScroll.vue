@@ -2,7 +2,7 @@
   <div class="vue3-seamless-horizontal-wrapper" ref="realWrapperRef"
     :style="{ transition: `transform ${ease}`, transform: `translateX(-${offset}px)` }" v-bind="$attrs">
     <template v-for="item in visibleItems" :key="item.id">
-      <slot :data="item.data" :index="item.index" style="color: brown;"> </slot>
+      <slot :data="item.data" :index="item.index"> </slot>
     </template>
   </div>
   <div style="position: absolute !important; top: -999999px !important;" ref="realWrapperHiddenRef" v-bind="$attrs">
@@ -107,6 +107,9 @@ export default defineComponent({
 
     let cursorIndex = -1;
 
+    // 滚动完一个周期的次数
+    let count = 0;
+
     let realBoxWidth = 0;
 
     let reqFrame = null;
@@ -138,10 +141,13 @@ export default defineComponent({
         } else {
           cursorIndex = tempIndex;
         }
+        // 光标回到列表头部，一个滚动周期结束
+        return true;
       } else {
         const tempFuns = ['splice', [0, bufferSize], [cursorIndex, totalIndex]];
         funArgs.value = tempFuns;
         cursorIndex = totalIndex;
+        return false;
       }
     }
 
@@ -183,14 +189,17 @@ export default defineComponent({
         reqFrame = requestAnimationFrame(() => {
           tempOffset += step;
           singleOffset += step;
-          if (props) {
+          if (direction.value === 'left') {
             offset.value += step;
           } else {
             offset.value -= step;
           }
           if (tempOffset > bufferTotalWidth) {
             emit('offset', bufferSize, targetList);
-            updateCursorIndex();
+            if (updateCursorIndex()) {
+              count += 1;
+              emit('count', count);
+            }
             nextTick(() => {
               offset.value = direction.value === 'left' ? 0 : getFullWidth() - realBoxWidth;
               tempOffset = 0;
@@ -248,7 +257,6 @@ export default defineComponent({
       if (!(direction.value === 'left')) {
         tempList.reverse();
       }
-      console.log('HorizontalScroll---', 'bufferSize', bufferSize, 'visibleCount', visibleCount.value, 'funArgs', JSON.stringify(funArgs.value), 'tempList', tempList);
       return duplicateId(tempList);
     });
 
@@ -497,7 +505,7 @@ export default defineComponent({
         targetList[index] = data;
         if (findIndexs.length > 0) {
           findIndexs.forEach((i) => {
-            visibleItems[i] = data;
+            visibleItems.value[i] = data;
           })
         }
       }
